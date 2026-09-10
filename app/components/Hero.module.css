@@ -1,6 +1,7 @@
 .hero {
-  --blind-bias: 0.5;
+  /* Sits above the pinned ChromeMark section and slides up off it. */
   position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   min-height: 100svh;
@@ -42,33 +43,43 @@
 .blinds {
   display: flex;
   flex-direction: column;
-  gap: clamp(7px, 0.76vw, 11px);
   padding-inline: var(--grid-margin);
+
+  /* One design unit = 1vw, frozen above the 1440px design width. */
+  --u: min(1vw, 14.4px);
+  /* Bars sit on a constant pitch; only their height tapers. */
+  --pitch: calc(2.361 * var(--u));
 }
 
 .blind {
-  position: relative;
   display: block;
-  height: clamp(12px, 1.32vw, 19px);
   background: var(--black);
 
-  /* Each bar keeps a full top edge; the bottom edge stops earlier the
-     further down the stack you go, leaving a diagonal tail. The pointer
-     biases the whole set left or right. */
-  --tail: calc((1 - var(--t)) * 94% + 4%);
-  --shift: calc((var(--blind-bias) - 0.5) * 22%);
+  /* Heights taper from 26px at the top of the stack to 12px at the bottom
+     (measured at the 1440px design width). */
+  --height: calc((1.806 - 0.972 * var(--t)) * var(--u));
+  height: var(--height);
+  margin-bottom: calc(var(--pitch) - var(--height));
+
+  /* Each bar runs at full height to --tail, drops over a short diagonal,
+     then continues at 54% height to the right edge. Hero.tsx drives
+     --tail per frame so the stack reads as one wave travelling down the
+     page as you scroll; this declaration is the resting state used before
+     hydration and under reduced motion. */
+  --tail: calc((1 - var(--t) * 0.798) * 100%);
+  --run: 7.8%;
   clip-path: polygon(
     0 0,
-    100% 0,
-    calc(var(--tail) + var(--shift)) 100%,
+    var(--tail) 0,
+    calc(var(--tail) + var(--run)) 46%,
+    100% 46%,
+    100% 100%,
     0 100%
   );
 
   transform-origin: left center;
   transform: scaleX(0);
-  transition:
-    transform 1.15s var(--ease-expo-out),
-    clip-path 0.4s linear;
+  transition: transform 1.15s var(--ease-expo-out);
   transition-delay: calc(0.2s + var(--i) * 0.045s);
 }
 
@@ -150,6 +161,9 @@
 
 @media (max-width: 699px) {
   .hero { padding-top: calc(var(--clamp-70) + var(--clamp-56)); }
+
+  /* Keep the bars legible once 1vw gets small. */
+  .blinds { --u: 1.8vw; }
 
   /* Sit the wordmark just under the blinds and give the cue its own row. */
   .wordmarkWrap { margin-top: var(--clamp-56); max-height: 0.8em; font-size: 22vw; }

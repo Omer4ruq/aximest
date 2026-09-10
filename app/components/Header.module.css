@@ -19,6 +19,8 @@
   display: flex;
   align-items: stretch;
   background: var(--grey-200);
+  /* the card keeps its own light surface on dark pages */
+  color: var(--black);
   border-radius: var(--clamp-4);
   min-height: var(--clamp-120);
   /* clipped bottom-left corner, mirroring the reference silhouette */
@@ -131,6 +133,28 @@
   .statement { display: none; }
 }
 
+.spacer { flex: 1; }
+
+/* With the menu open the panel is light, so the CTA goes back to dark ink. */
+body[data-theme="dark"] .header[data-open="true"] .cta {
+  --btn-bg-color: transparent;
+  --btn-border-color: var(--black);
+  --btn-color: var(--black);
+  --btn-hover-bg-color: var(--black);
+  --btn-hover-border-color: var(--black);
+  --btn-hover-color: var(--white);
+}
+
+/* Dark pages: the CTA outlines in white and follows the theme tokens. */
+body[data-theme="dark"] .header:not([data-open="true"]) .cta {
+  --btn-bg-color: transparent;
+  --btn-border-color: var(--white);
+  --btn-color: var(--white);
+  --btn-hover-bg-color: var(--white);
+  --btn-hover-border-color: var(--white);
+  --btn-hover-color: var(--black);
+}
+
 /* ---------- CTA ---------- */
 .cta {
   margin-top: var(--clamp-14);
@@ -149,6 +173,7 @@
   inset: 0;
   z-index: -1;
   background: var(--grey-200);
+  color: var(--black);
   clip-path: inset(0 0 100% 0);
   visibility: hidden;
   transition:

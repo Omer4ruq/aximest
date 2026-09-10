@@ -179,7 +179,180 @@ export const offices = [
 export const nav = [
   { n: "01", label: "Services", href: "/#services", children: services },
   { n: "02", label: "Projects", href: "/projects" },
-  { n: "03", label: "Expertise", href: "/#expertise" },
+  { n: "03", label: "Expertise", href: "/expertise" },
   { n: "04", label: "Contact", href: "/contact" },
   { n: "05", label: "Podcasts", href: "/podcasts" },
 ];
+
+/* ---------------------------------------------------------------
+   Inner pages
+   --------------------------------------------------------------- */
+
+export const projects = [
+  { n: "01", name: "Styllar", kind: "Marketplace", group: "Web 3",
+    body: "A cross-chain marketplace with on-chain royalties, batch listings and a settlement layer built for volume." },
+  { n: "02", name: "Sonr", kind: "Layer 1", group: "Web 3",
+    body: "Protocol design, validator tooling and an SDK that lets application teams ship without touching consensus." },
+  { n: "03", name: "Formula E: High Voltage", kind: "GameFi", group: "Web 3",
+    body: "A racing title with tokenised assets, an in-game economy and a custody layer players never have to think about." },
+  { n: "04", name: "Northbound Health", kind: "Platform", group: "Web 2",
+    body: "A HIPAA-compliant care platform: scheduling, records and billing consolidated into one operational system." },
+  { n: "05", name: "Cargoline", kind: "Logistics", group: "Web 2",
+    body: "Fleet telemetry, route optimisation and a dispatch console replacing a decade of spreadsheets." },
+  { n: "06", name: "Ledgerbase", kind: "Fintech", group: "Web 2",
+    body: "A double-entry ledger and reconciliation engine handling millions of daily postings." },
+];
+
+export const projectGroups = ["Web 3", "Web 2"];
+
+export const stack = [
+  { n: "01", name: "Python", kind: "Language", group: "Language",
+    body: "Backend services, data pipelines and ML tooling — our default for anything analytical." },
+  { n: "02", name: "React Native", kind: "Framework", group: "Mobile",
+    body: "One codebase across iOS and Android, with native modules where performance demands them." },
+  { n: "03", name: "React JS", kind: "Framework", group: "Frontend",
+    body: "Component architecture, state boundaries and rendering strategies that survive a growing team." },
+  { n: "04", name: "Django", kind: "Framework", group: "Backend",
+    body: "Batteries-included APIs, admin tooling and migrations for products that need to ship this quarter." },
+  { n: "05", name: "Rust", kind: "Language", group: "Language",
+    body: "Where correctness and throughput both matter: protocol clients, indexers and cryptographic work." },
+  { n: "06", name: "Solidity", kind: "Language", group: "Smart Contract",
+    body: "Audited contract systems, upgrade paths and gas profiles reviewed line by line." },
+  { n: "07", name: "Go", kind: "Language", group: "Backend",
+    body: "Concurrent services and infrastructure daemons where predictable latency is the requirement." },
+  { n: "08", name: "CosmWasm", kind: "Backend", group: "Smart Contract",
+    body: "Contract development for Cosmos-based chains, from module design to IBC integration." },
+  { n: "09", name: "PostgreSQL", kind: "Database", group: "Database",
+    body: "Schema design, query planning and partitioning strategies for datasets that keep growing." },
+  { n: "10", name: "Kubernetes", kind: "Infrastructure", group: "Infrastructure",
+    body: "Cluster topology, autoscaling and deployment pipelines that fail safely." },
+  { n: "11", name: "TypeScript", kind: "Language", group: "Frontend",
+    body: "Types as design documentation — the contract between your teams and your future selves." },
+  { n: "12", name: "Node JS", kind: "Web App", group: "Backend",
+    body: "Real-time services, edge workloads and the glue between systems that were never meant to meet." },
+];
+
+export const stackGroups = [
+  "All", "Backend", "Frontend", "Mobile", "Database",
+  "Infrastructure", "Language", "Smart Contract",
+];
+
+export const podcasts = [
+  {
+    title: "The Innovation Blueprint",
+    host: "Phil Therien",
+    status: "English only",
+    tags: ["Manufacturing", "AI", "Cloud", "Systems", "Leadership", "Energy", "Scaling"],
+    body: "Real talk about what's broken and how the best operators are fixing it. Conversations with founders and technical leaders reshaping modern industries.",
+  },
+  {
+    title: "The Interchain Talk Show",
+    host: "Utkarsh Varma",
+    status: "Coming soon",
+    tags: ["Blockchain", "L1s", "L2s", "Privacy", "Interchain", "DeFi", "RWA"],
+    body: "From technical deep-dives to industry insights, we break down complex topics into engaging discussions that matter to developers and investors alike.",
+  },
+];
+
+export const articles = [
+  { id: "ART/766", date: "Mar 4, 2026", tags: ["Healthcare", "Machine Learning"], title: "Machine Learning in Medical Imaging: Uses & Challenges" },
+  { id: "ART/765", date: "Mar 4, 2026", tags: ["Machine Learning", "Retail"], title: "Machine Learning in Retail: Use Cases, Benefits & Guide" },
+  { id: "ART/764", date: "Mar 4, 2026", tags: ["Logistics", "Machine Learning"], title: "Machine Learning in Logistics: From Data to Delivery" },
+  { id: "ART/763", date: "Mar 3, 2026", tags: ["Machine Learning", "Telecom"], title: "Understanding Machine Learning in Telecommunications Systems" },
+  { id: "ART/762", date: "Mar 1, 2026", tags: ["Blockchain", "Security"], title: "Zero-Knowledge Proofs Without the Hand-Waving" },
+  { id: "ART/761", date: "Feb 26, 2026", tags: ["Architecture"], title: "Designing Systems That Survive Their Second Year" },
+  { id: "ART/760", date: "Feb 24, 2026", tags: ["AI", "Product"], title: "Shipping LLM Features Users Actually Trust" },
+  { id: "ART/759", date: "Feb 20, 2026", tags: ["DevOps"], title: "The Deployment Pipeline as a Product" },
+];
+
+/** Extra copy for each service detail page. */
+export const serviceDetail: Record<
+  string,
+  { abbr: string; statement: string; intro: string; capabilities: string[]; items: { n: string; title: string; body: string }[] }
+> = {
+  advisory: {
+    abbr: "ADVSR",
+    statement: "Leverage the proficiency of our senior team of experts.",
+    intro: "Access our top team's deep expertise for your strategic needs. Get insightful consultations, technical roadmaps, and elite talent to strengthen your lineup.",
+    capabilities: ["Technology Architecture", "Product Management", "Systems Integration", "DevOps Methodology", "Cloud Services", "Application Security"],
+    items: [
+      { n: "001", title: "Fractional CTO", body: "Expert tech leadership without full-time commitment, tailored to your budget and needs." },
+      { n: "002", title: "Technical Due Diligence", body: "A senior engineering assessment of the codebase, architecture, and team before you commit." },
+      { n: "003", title: "IT Staff Augmentation", body: "Senior engineers embedded directly in your team, adding delivery capacity without the hiring cycle." },
+      { n: "004", title: "Frontend Development", body: "Engaging, functional, and visually appealing UIs, enhancing user experience across devices." },
+      { n: "005", title: "Backend Development", body: "APIs and services designed for the load you have and the load you are planning for." },
+      { n: "006", title: "DevOps Consulting", body: "Pipelines, observability and infrastructure-as-code that make releases boring." },
+      { n: "007", title: "Cloud Consulting", body: "Migration paths and cost models grounded in what your workloads actually do." },
+      { n: "008", title: "Technology Consulting", body: "Independent guidance on build-versus-buy, vendor selection and technical strategy." },
+      { n: "009", title: "Fullstack Specialists", body: "Engineers who own a feature end to end, from schema to interface." },
+    ],
+  },
+  blockchain: {
+    abbr: "BLKCH",
+    statement: "Protocols, contracts and infrastructure built to be audited.",
+    intro: "Delivering secure immutable data, smart contract development, tokenomics, and zero-knowledge proof technologies to optimize security, transparency, and financial operations.",
+    capabilities: ["Protocol Design", "Smart Contracts", "Tokenomics", "Zero-Knowledge", "Node Infrastructure", "Wallet Systems"],
+    items: [
+      { n: "001", title: "Smart Contracts", body: "Contract systems written for review: explicit invariants, upgrade paths and gas budgets." },
+      { n: "002", title: "Blockchain Consulting", body: "Chain selection, architecture and compliance framing before a line of code is written." },
+      { n: "003", title: "Web3 Development", body: "Frontends, indexers and wallet flows that hide the chain from the people using it." },
+      { n: "004", title: "NFT Marketplace", body: "Listings, royalties and settlement designed for throughput rather than a demo." },
+      { n: "005", title: "DeFi Development", body: "Lending, AMM and staking primitives with economic assumptions written down." },
+      { n: "006", title: "Node Infrastructure", body: "Validator and RPC fleets with the monitoring to know they are healthy." },
+      { n: "007", title: "Wallet Development", body: "Custody, recovery and signing flows for people who will never read a seed phrase." },
+      { n: "008", title: "DAO Systems", body: "Governance contracts, proposal tooling and treasury controls." },
+      { n: "009", title: "Token Design", body: "Supply schedules and incentive mechanics modelled before launch." },
+    ],
+  },
+  "product-development": {
+    abbr: "PRDCT",
+    statement: "From a whiteboard sketch to something people pay for.",
+    intro: "Bring market-ready products to life: prototypes & MVPs, SaaS, web and mobile applications, from planning and design to coding, testing, and ongoing maintenance.",
+    capabilities: ["Product Thinking", "Prototyping", "SaaS Architecture", "Mobile", "QA & Testing", "Maintenance"],
+    items: [
+      { n: "001", title: "Fast Prototyping", body: "A working artefact in weeks, built to answer the question you are actually asking." },
+      { n: "002", title: "MVP Development", body: "The smallest thing that proves the model, engineered so it does not need throwing away." },
+      { n: "003", title: "SaaS Development", body: "Multi-tenancy, billing and permissions designed in from the first commit." },
+      { n: "004", title: "Web Applications", body: "Interfaces that stay fast as the data grows and the team changes." },
+      { n: "005", title: "Mobile Applications", body: "iOS and Android from one codebase, native where it counts." },
+      { n: "006", title: "Project Takeover", body: "Inheriting someone else's codebase, stabilising it, and making it shippable again." },
+      { n: "007", title: "Ongoing Maintenance", body: "Dependency hygiene, incident response and the unglamorous work that keeps products alive." },
+    ],
+  },
+  "enterprise-software": {
+    abbr: "ENTRP",
+    statement: "Operational systems that hold up under real load.",
+    intro: "Scale effectively: streamline operations with customized platforms, enhance productivity through advanced integrations, and secure your infrastructure with robust support systems.",
+    capabilities: ["Custom Platforms", "ERP Deployment", "Integrations", "Data Migration", "Security", "24/7 Support"],
+    items: [
+      { n: "001", title: "Custom Platforms", body: "Software shaped around how your business works, not the other way round." },
+      { n: "002", title: "ERP Deployment", body: "Implementation and configuration with the migration plan written first." },
+      { n: "003", title: "System Integration", body: "Connecting systems that were never designed to talk, reliably." },
+      { n: "004", title: "Data Migration", body: "Moving decades of records without losing the parts that matter." },
+      { n: "005", title: "Legacy Modernisation", body: "Incremental replacement — no big-bang rewrites, no frozen roadmaps." },
+      { n: "006", title: "Infrastructure Security", body: "Hardening, access control and audit trails that satisfy your compliance team." },
+      { n: "007", title: "Observability", body: "Metrics, logs and traces arranged so an incident has one obvious first question." },
+      { n: "008", title: "Managed Support", body: "Monitoring and response around the clock, with humans on the other end." },
+      { n: "009", title: "Performance Engineering", body: "Profiling and tuning against the workloads you actually run." },
+    ],
+  },
+  ai: {
+    abbr: "AIML",
+    statement: "AI that survives contact with production.",
+    intro: "Enhance operations with AI: strategy, LLM integration, automated decision systems, and OCR technology, tailored to optimize performance and efficiency.",
+    capabilities: ["AI Strategy", "LLM Integration", "Agents", "Decision Systems", "OCR", "Evaluation"],
+    items: [
+      { n: "001", title: "AI Strategy", body: "Where a model helps, where it does not, and what it will cost to find out." },
+      { n: "002", title: "LLM Integration", body: "Retrieval, tool use and guardrails wired into the systems you already run." },
+      { n: "003", title: "AI Agents", body: "Agents with narrow scope, real evaluations and a clear failure mode." },
+      { n: "004", title: "Automated Decisions", body: "Decision systems with audit trails, so an answer can always be explained." },
+      { n: "005", title: "Document Digitisation", body: "OCR pipelines for the paper your business still runs on." },
+      { n: "006", title: "Model Context Protocol", body: "MCP servers exposing your internal tools to assistants, safely." },
+      { n: "007", title: "ML Development", body: "Training, tuning and serving models against metrics that mean something." },
+      { n: "008", title: "AI Automation", body: "Removing the repetitive work nobody was ever hired to do." },
+      { n: "009", title: "Evaluation Harnesses", body: "Test suites for non-deterministic systems, run on every change." },
+      { n: "010", title: "Data Preparation", body: "Labelling, cleaning and versioning — the part that decides whether any of it works." },
+    ],
+  },
+};
+

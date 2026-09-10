@@ -1,110 +1,106 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRevealGroup } from "../hooks/useReveal";
+import Button from "./Button";
 import { pillars } from "../lib/site";
 import styles from "./Pillars.module.css";
 
 export default function Pillars() {
-  const reveal = useRevealGroup<HTMLElement>();
-  const panels = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
+  const [inView, setInView] = useState(false);
 
+  // Rows stay hidden until the panel is on screen, then run their stagger.
+  // Under reduced motion the CSS drops the transitions, so they simply appear.
   useEffect(() => {
-    const nodes = panels.current.filter(Boolean) as HTMLDivElement[];
-    if (!nodes.length) return;
+    const el = sectionRef.current;
+    if (!el) return;
     const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const i = nodes.indexOf(entry.target as HTMLDivElement);
-          if (i >= 0) setActive(i);
-        });
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
       },
-      { rootMargin: "-40% 0px -40% 0px" },
+      { threshold: 0.15 },
     );
-    nodes.forEach((n) => io.observe(n));
+    io.observe(el);
     return () => io.disconnect();
   }, []);
 
-  const goTo = (i: number) => {
-    const node = panels.current[i];
-    if (!node) return;
-    const lenis = window.__lenis;
-    if (lenis) lenis.scrollTo(node, { offset: -110 });
-    else node.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
-    <section className={styles.section} id="expertise" ref={reveal}>
-      <div className={styles.tabsWrap}>
-        <div className={styles.tabs} role="tablist" aria-label="What defines us">
+    <section
+      className={styles.section}
+      id="expertise"
+      ref={sectionRef}
+      data-inview={inView}
+    >
+      <div className={styles.nav}>
+        <div className={styles.navList} role="tablist" aria-label="What defines us">
           {pillars.map((pillar, i) => (
-            <button
+            <Button
               key={pillar.key}
-              type="button"
-              role="tab"
-              aria-selected={active === i}
+              color={active === i ? "grey" : "default"}
               className={styles.tab}
-              data-active={active === i}
-              onClick={() => goTo(i)}
+              role="tab"
+              id={`tab-${pillar.key}`}
+              aria-controls={`panel-${pillar.key}`}
+              aria-selected={active === i}
+              tabIndex={active === i ? 0 : -1}
+              onClick={() => setActive(i)}
+              onKeyDown={(e) => {
+                if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+                e.preventDefault();
+                const next =
+                  e.key === "ArrowRight"
+                    ? (i + 1) % pillars.length
+                    : (i - 1 + pillars.length) % pillars.length;
+                setActive(next);
+                document.getElementById(`tab-${pillars[next].key}`)?.focus();
+              }}
             >
               {pillar.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
 
-      {pillars.map((pillar, pi) => (
-        <div
-          key={pillar.key}
-          className={styles.panel}
-          ref={(el) => {
-            panels.current[pi] = el;
-          }}
-        >
-          <div className={styles.panelHead}>
-            <span className={styles.slash}>/</span>
-            <h2 className={styles.panelTitle}>
-              <span className={styles.mask} data-reveal="mask">
-                <span>{pillar.label}</span>
-              </span>
-            </h2>
+      {/* One panel; the cards share a single grid cell and cross-fade. */}
+      <div className={styles.panel}>
+        {pillars.map((pillar, i) => (
+          <div
+            key={pillar.key}
+            className={styles.card}
+            id={`panel-${pillar.key}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${pillar.key}`}
+            data-active={active === i}
+            aria-hidden={active !== i}
+          >
+            <span className={styles.separator} aria-hidden="true">
+              /
+            </span>
+
+            <h2 className={styles.title}>{pillar.label}</h2>
+
+            <ol className={styles.list}>
+              {pillar.items.map((item, ii) => (
+                <li
+                  key={item.n}
+                  className={styles.item}
+                  style={{ ["--index" as string]: String(ii) }}
+                >
+                  <span className={styles.itemIndex}>{item.n}</span>
+                  <h3 className={styles.itemTitle}>{item.title}</h3>
+                  <div className={styles.itemContent}>
+                    <p>{item.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
-
-          <ol className={styles.items}>
-            {pillar.items.map((item, ii) => (
-              <li key={item.n} className={styles.item}>
-                <span
-                  className={styles.itemNum}
-                  data-reveal
-                  style={{ ["--stagger" as string]: `${ii * 0.05}s` }}
-                >
-                  {item.n}
-                </span>
-                <h3
-                  className={styles.itemTitle}
-                  data-reveal
-                  style={{ ["--stagger" as string]: `${ii * 0.05 + 0.04}s` }}
-                >
-                  {item.title}
-                </h3>
-                <p
-                  className={styles.itemBody}
-                  data-reveal
-                  style={{ ["--stagger" as string]: `${ii * 0.05 + 0.08}s` }}
-                >
-                  {item.body}
-                </p>
-              </li>
-            ))}
-          </ol>
-
-          <span className={styles.panelIndex} aria-hidden="true">
-            {pi + 1}
-          </span>
-        </div>
-      ))}
+        ))}
+      </div>
     </section>
   );
 }

@@ -1,37 +1,75 @@
 .section { background: var(--white); }
 
-.list { display: block; }
+/* ============================================================
+   Stacked list
+   Each item is sticky at top 0, then translated down by its own
+   index. The transform moves only the paint position, not the box
+   sticky pins, so the cards come to rest 4em apart and pile up.
+   The negative margin cancels that shift in flow; the list's bottom
+   padding gives it back so the section keeps its full scroll length.
+   ============================================================ */
+.list {
+  --offset: 4em;
+  --padding-offset: calc(var(--total-items) * var(--offset));
 
-.row {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--grid-gutter);
-  align-items: start;
-  padding: var(--clamp-24) var(--grid-margin) var(--clamp-from-100-80);
-  border-top: 1px dashed var(--grey-700);
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(var(--total-items), 1fr);
+  position: relative;
+  width: 100%;
+  padding: 0 var(--grid-margin) var(--padding-offset);
 }
 
-.row:last-child { border-bottom: 1px dashed var(--grey-700); }
+.item {
+  --calc-offset: calc(var(--scroll-index) * var(--offset));
 
-/* ---- left index ---- */
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  transform: translateY(var(--calc-offset));
+  margin-bottom: calc(var(--offset) * -1);
+}
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto 1fr;
+  column-gap: var(--grid-gutter);
+  align-items: stretch;
+
+  width: 100%;
+  height: 100%;
+  min-height: max(0px, 36.1111vw);
+  padding: var(--grid-gutter) 0;
+
+  /* Opaque, so each card hides the one stacked above it. */
+  background: var(--white);
+  color: inherit;
+  overflow: hidden;
+}
+
+/* the dashed rule that separates the stacked headers */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  border-bottom: var(--border);
+}
+
 .index {
-  grid-column: 1 / span 2;
+  grid-area: 1 / 1 / 2 / 4;
   font-family: var(--font-mono);
   font-size: var(--clamp-12);
   letter-spacing: 0.02em;
-  color: var(--black);
 }
 
-/* ---- middle content ---- */
-.content {
-  grid-column: 4 / span 6;
-  display: flex;
-  flex-direction: column;
-  gap: var(--clamp-70);
-  align-items: flex-start;
-}
-
-.title { align-self: stretch; }
+.title { grid-area: 1 / 4 / 2 / 10; }
 
 .titleLink { display: inline-block; }
 
@@ -60,29 +98,36 @@
 
 .titleLink:hover .titleMask > span { color: var(--red-500); }
 
+.content {
+  grid-area: 2 / 4 / 3 / 8;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: var(--clamp-64);
+  padding-top: var(--clamp-from-80-52);
+  width: 100%;
+  height: 100%;
+}
+
 .body {
   font-size: clamp(16px, 1.25vw, 18px);
   line-height: 1.38;
   letter-spacing: -0.008em;
-  max-width: 46ch;
 }
 
 .button { min-width: var(--clamp-215, 214px); }
 
-/* ---- right glyph panel ---- */
-.panel {
-  grid-column: 10 / span 3;
+.media {
+  grid-area: 1 / 10 / 3 / 13;
   display: grid;
   place-items: center;
-  align-self: stretch;
-  min-height: var(--clamp-440);
   background: var(--grey-100);
   border-radius: var(--clamp-4);
   overflow: hidden;
   transition: background 0.45s var(--ease-power2-out);
 }
 
-.row:hover .panel { background: var(--grey-200); }
+.card:hover .media { background: var(--grey-200); }
 
 .glyph {
   width: 42%;
@@ -92,17 +137,34 @@
   transition: transform 0.7s var(--ease-power3-out);
 }
 
-.row:hover .glyph { transform: scale(1.06) rotate(-4deg); }
+.card:hover .glyph { transform: scale(1.06) rotate(-4deg); }
 
+/* ---- mobile: drop the stacking, stack normally ---- */
 @media (max-width: 899px) {
-  .row {
-    grid-template-columns: 1fr;
-    row-gap: var(--clamp-24);
-    padding-bottom: var(--clamp-from-80-52);
+  .list {
+    grid-template-rows: none;
+    padding-bottom: 0;
   }
+
+  .item {
+    position: static;
+    transform: none;
+    margin-bottom: 0;
+  }
+
+  .card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    row-gap: var(--clamp-24);
+    min-height: 0;
+    padding: var(--clamp-24) 0 var(--clamp-from-80-52);
+  }
+
   .index,
+  .title,
   .content,
-  .panel { grid-column: 1; }
-  .content { gap: var(--clamp-24); }
-  .panel { min-height: var(--clamp-250); }
+  .media { grid-area: auto; }
+
+  .content { row-gap: var(--clamp-24); padding-top: 0; height: auto; }
+  .media { min-height: var(--clamp-250); }
 }

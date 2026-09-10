@@ -1,6 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Swiper from "swiper";
+import { EffectCreative, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-creative";
+
 import SectionHead from "./SectionHead";
 import Button from "./Button";
 import Media from "./Media";
@@ -11,65 +16,70 @@ import styles from "./Clients.module.css";
 
 export default function Clients() {
   const reveal = useRevealGroup<HTMLElement>();
-  const trackRef = useRef<HTMLUListElement>(null);
-  const [index, setIndex] = useState(0);
+  const swiperEl = useRef<HTMLDivElement>(null);
+  const paginationEl = useRef<HTMLDivElement>(null);
+  const cursorEl = useRef<HTMLDivElement>(null);
+  const swiper = useRef<Swiper | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [cursor, setCursor] = useState({ x: 0, y: 0, visible: false });
 
-  const drag = useRef({ down: false, startX: 0, startScroll: 0, moved: 0 });
+  useEffect(() => {
+    const el = swiperEl.current;
+    if (!el) return;
 
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
-    const track = trackRef.current;
-    if (!track) return;
-    drag.current = {
-      down: true,
-      startX: e.clientX,
-      startScroll: track.scrollLeft,
-      moved: 0,
+    // Matches the reference exactly: the outgoing card recedes in Z and
+    // fades while the incoming one slides in from the right.
+    const instance = new Swiper(el, {
+      modules: [EffectCreative, Pagination],
+      effect: "creative",
+      creativeEffect: {
+        limitProgress: 2,
+        progressMultiplier: 1,
+        perspective: true,
+        shadowPerProgress: false,
+        prev: { translate: [0, 0, -400], rotate: [0, 0, 0], opacity: 0, scale: 0.75, shadow: true },
+        next: { translate: ["100%", 0, 0], rotate: [0, 0, 0], opacity: 1, scale: 1 },
+      },
+      speed: 300,
+      slidesPerView: 1,
+      spaceBetween: 0,
+      grabCursor: false,
+      threshold: 5,
+      resistanceRatio: 0.85,
+      longSwipesRatio: 0.5,
+      shortSwipes: true,
+      followFinger: true,
+      watchSlidesProgress: true,
+      a11y: { enabled: true },
+      pagination: {
+        el: paginationEl.current,
+        clickable: true,
+        bulletClass: styles.bullet,
+        bulletActiveClass: styles.bulletActive,
+      },
+      on: {
+        touchStart: () => setDragging(true),
+        touchEnd: () => setDragging(false),
+      },
+    });
+
+    swiper.current = instance;
+    return () => {
+      instance.destroy(true, true);
+      swiper.current = null;
     };
-    setDragging(true);
   }, []);
 
+  // The "Drag" pill follows the pointer while it is over the slider.
   const onPointerMove = useCallback((e: React.PointerEvent) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const rect = track.getBoundingClientRect();
-    setCursor({ x: e.clientX - rect.left, y: e.clientY - rect.top, visible: true });
-    if (!drag.current.down) return;
-    const dx = e.clientX - drag.current.startX;
-    drag.current.moved = Math.abs(dx);
-    track.scrollLeft = drag.current.startScroll - dx;
+    const cursor = cursorEl.current;
+    if (!cursor) return;
+    cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
   }, []);
 
-  const endDrag = useCallback(() => {
-    drag.current.down = false;
-    setDragging(false);
+  const setCursorVisible = useCallback((visible: boolean) => {
+    const cursor = cursorEl.current;
+    if (cursor) cursor.dataset.visible = String(visible);
   }, []);
-
-  useEffect(() => {
-    window.addEventListener("pointerup", endDrag);
-    return () => window.removeEventListener("pointerup", endDrag);
-  }, [endDrag]);
-
-  // Keep the pagination dots in sync with the scroll position.
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const onScroll = () => {
-      const slide = track.firstElementChild as HTMLElement | null;
-      if (!slide) return;
-      setIndex(Math.round(track.scrollLeft / slide.offsetWidth));
-    };
-    track.addEventListener("scroll", onScroll, { passive: true });
-    return () => track.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const goTo = (i: number) => {
-    const track = trackRef.current;
-    const slide = track?.children[i] as HTMLElement | undefined;
-    if (!track || !slide) return;
-    track.scrollTo({ left: slide.offsetLeft - track.offsetLeft, behavior: "smooth" });
-  };
 
   return (
     <section className={styles.section} id="clients" ref={reveal}>
@@ -86,72 +96,51 @@ export default function Clients() {
 
       <div
         className={styles.carousel}
-        onPointerLeave={() => setCursor((c) => ({ ...c, visible: false }))}
+        onPointerMove={onPointerMove}
+        onPointerEnter={() => setCursorVisible(true)}
+        onPointerLeave={() => setCursorVisible(false)}
       >
-        <ul
-          ref={trackRef}
-          className={styles.track}
-          data-dragging={dragging}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
-          onClickCapture={(e) => {
-            if (drag.current.moved > 6) {
-              e.preventDefault();
-              e.stopPropagation();
-            }
-          }}
-        >
-          {clients.map((client, i) => (
-            <li key={client.index} className={styles.slide}>
-              <article className={styles.card}>
-                <span className={styles.index}>{client.index}</span>
+        <div className={`swiper ${styles.swiper}`} ref={swiperEl}>
+          <div className="swiper-wrapper">
+            {clients.map((client, i) => (
+              <div className={`swiper-slide ${styles.slide}`} key={client.index}>
+                <article className={styles.card}>
+                  <span className={styles.index}>{client.index}</span>
 
-                <figure className={styles.media}>
-                  <Media seed={i} />
-                </figure>
+                  <figure className={styles.media}>
+                    <Media seed={i} />
+                  </figure>
 
-                <div className={styles.text}>
                   <h3 className={styles.title}>{client.title}</h3>
-                  <p className={styles.body}>{client.description}</p>
-                  <Button
-                    href="/contact"
-                    hoverLabel="Get in touch"
-                    icon={<ArrowRight />}
-                    className={styles.button}
-                  >
-                    {client.cta}
-                  </Button>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ul>
 
-        <div className={styles.dots} role="tablist" aria-label="Client segments">
-          {clients.map((client, i) => (
-            <button
-              key={client.index}
-              type="button"
-              role="tab"
-              aria-selected={i === index}
-              aria-label={client.title}
-              className={styles.dot}
-              data-active={i === index}
-              onClick={() => goTo(i)}
-            />
-          ))}
+                  <div className={styles.text}>
+                    <p className={styles.body}>{client.description}</p>
+                    <Button
+                      href="/contact"
+                      hoverLabel="Get in touch"
+                      icon={<ArrowRight />}
+                      className={styles.button}
+                    >
+                      {client.cta}
+                    </Button>
+                  </div>
+                </article>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <span
+        <div className={styles.pagination} ref={paginationEl} />
+
+        <div
           className={styles.dragCursor}
-          data-visible={cursor.visible}
+          ref={cursorEl}
+          data-visible="false"
           data-active={dragging}
-          style={{ transform: `translate3d(${cursor.x}px, ${cursor.y}px, 0)` }}
           aria-hidden="true"
         >
-          Drag
-        </span>
+          <span className={styles.dragCursorInner}>Drag</span>
+        </div>
       </div>
     </section>
   );

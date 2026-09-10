@@ -1,7 +1,12 @@
 .section {
   --p: 0;
   position: relative;
-  height: 220vh;
+  z-index: 1;
+
+  /* Pulled up under the hero so its sticky child pins from the very top:
+     the hero then scrolls away to reveal it, rather than pushing it down. */
+  margin-top: -100svh;
+  height: 220svh;
   background:
     radial-gradient(120% 90% at 50% 25%, #f4f4f5 0%, #d6d7da 45%, #b9babe 100%);
 }
@@ -93,5 +98,5 @@
 
 @media (max-width: 899px) {
   .labels { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--clamp-10); }
-  .section { height: 170vh; }
+  .section { height: 180svh; }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Button from "./Button";
 import RollText from "./RollText";
@@ -9,6 +10,8 @@ import { nav, site } from "../lib/site";
 import styles from "./Header.module.css";
 
 export default function Header() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>("Services");
@@ -17,7 +20,8 @@ export default function Header() {
     let last = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
-      setHidden(y > 300 && y > last);
+      // The reference retracts the bar as soon as you leave the top.
+      setHidden(y > 90 && y > last);
       last = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -69,15 +73,19 @@ export default function Header() {
 
       <span className={styles.notch} aria-hidden="true" />
 
-      <p className={styles.statement}>
-        An Elite Team of
-        <br />
-        Software Engineers
-      </p>
+      {isHome ? (
+        <p className={styles.statement}>
+          An Elite Team of
+          <br />
+          Software Engineers
+        </p>
+      ) : (
+        <span className={styles.spacer} />
+      )}
 
       <Button
         href="/contact"
-        color="black"
+        color={isHome ? "black" : "default"}
         hoverLabel="Contact us"
         icon={<ArrowRight />}
         className={styles.cta}

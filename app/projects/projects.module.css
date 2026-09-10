@@ -1,0 +1,7 @@
+.filters {
+  padding: var(--clamp-from-52-32) var(--grid-margin) var(--clamp-20);
+}
+
+.list {
+  padding: 0 var(--grid-margin) var(--clamp-from-140-80);
+}

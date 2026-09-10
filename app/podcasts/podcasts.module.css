@@ -1,0 +1,112 @@
+.grid {
+  display: grid;
+  gap: var(--grid-gutter);
+  padding: var(--clamp-from-52-32) var(--grid-margin) var(--clamp-from-140-80);
+}
+
+@media (min-width: 900px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--clamp-16);
+  padding: var(--clamp-16);
+  background: var(--grey-100);
+  border-radius: var(--clamp-4);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--clamp-4);
+}
+
+.tag {
+  padding: 3px var(--clamp-6);
+  border-radius: 2px;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: var(--clamp-10);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.status {
+  margin-left: auto;
+  padding: 3px var(--clamp-6);
+  border: 1px solid var(--black);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: var(--clamp-10);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.host {
+  font-size: clamp(16px, 1.25vw, 18px);
+  line-height: 1.2;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 3.3vw, 46px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.body {
+  max-width: 44ch;
+  margin-left: auto;
+  padding-bottom: var(--clamp-16);
+  border-bottom: var(--border);
+  font-size: clamp(16px, 1.25vw, 18px);
+  line-height: 1.32;
+  text-indent: var(--grid-col);
+}
+
+.cover {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--clamp-3);
+  overflow: hidden;
+  background: var(--black);
+}
+
+.cover :global(svg) {
+  transition: transform 1.1s var(--ease-power3-out);
+}
+
+.card:hover .cover :global(svg) { transform: scale(1.04); }
+
+.coverLabel {
+  position: absolute;
+  inset: auto var(--clamp-16) var(--clamp-16) var(--clamp-16);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--white);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.coverLabel span {
+  font-family: var(--font-mono);
+  font-size: var(--clamp-10);
+  font-weight: 400;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+@media (max-width: 899px) {
+  .body { margin-left: 0; text-indent: 0; }
+}

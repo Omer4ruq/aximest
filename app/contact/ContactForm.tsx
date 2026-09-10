@@ -5,24 +5,48 @@ import Button from "../components/Button";
 import { ArrowRight } from "../components/Icons";
 import styles from "./contact.module.css";
 
-const BUDGETS = ["< $50k", "$50k – $150k", "$150k – $500k", "$500k +"];
-const INTERESTS = [
-  "Advisory",
+const SUBJECTS = [
+  "New project",
+  "Advisory / fractional CTO",
   "Blockchain",
-  "Product Development",
-  "Enterprise Software",
-  "Artificial Intelligence (AI)",
+  "Product development",
+  "Enterprise software",
+  "Artificial intelligence",
+  "Something else",
 ];
 
-export default function ContactForm() {
-  const [interests, setInterests] = useState<string[]>([]);
-  const [budget, setBudget] = useState<string | null>(null);
-  const [sent, setSent] = useState(false);
+function Field({
+  label,
+  name,
+  type = "text",
+  required = true,
+  autoComplete,
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  required?: boolean;
+  autoComplete?: string;
+}) {
+  return (
+    <label className={styles.field}>
+      <span className={styles.label}>
+        {label}
+        {required ? <em>*</em> : null}
+      </span>
+      <input
+        className={styles.input}
+        name={name}
+        type={type}
+        required={required}
+        autoComplete={autoComplete}
+      />
+    </label>
+  );
+}
 
-  const toggle = (value: string) =>
-    setInterests((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
-    );
+export default function ContactForm() {
+  const [sent, setSent] = useState(false);
 
   return (
     <form
@@ -32,71 +56,49 @@ export default function ContactForm() {
         setSent(true);
       }}
     >
-      <fieldset className={styles.fieldset}>
-        <legend className={styles.legend}>
-          <span className={styles.slash}>/</span> What can we help with?
-        </legend>
-        <div className={styles.chips}>
-          {INTERESTS.map((item) => (
-            <button
-              key={item}
-              type="button"
-              className={styles.chip}
-              data-active={interests.includes(item)}
-              onClick={() => toggle(item)}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-      </fieldset>
+      <label className={styles.field}>
+        <span className={styles.label}>
+          Subject<em>*</em>
+        </span>
+        <span className={styles.selectWrap}>
+          <select className={styles.input} name="subject" required defaultValue="">
+            <option value="" disabled>
+              Select one
+            </option>
+            {SUBJECTS.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+          <span className={styles.chevron} aria-hidden="true">
+            <svg viewBox="0 0 12 8" fill="none" width="100%" height="100%">
+              <path d="M1 1.5 6 6.5l5-5" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
+          </span>
+        </span>
+      </label>
 
-      <fieldset className={styles.fieldset}>
-        <legend className={styles.legend}>
-          <span className={styles.slash}>/</span> Budget
-        </legend>
-        <div className={styles.chips}>
-          {BUDGETS.map((item) => (
-            <button
-              key={item}
-              type="button"
-              className={styles.chip}
-              data-active={budget === item}
-              onClick={() => setBudget(item)}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-      </fieldset>
+      <Field label="First name" name="firstName" autoComplete="given-name" />
+      <Field label="Last name" name="lastName" autoComplete="family-name" />
+      <Field label="Phone number" name="phone" type="tel" autoComplete="tel" />
+      <Field label="Email" name="email" type="email" autoComplete="email" />
 
-      <div className={styles.fields}>
-        <label className={styles.field}>
-          <span className={styles.label}>Name</span>
-          <input name="name" required autoComplete="name" />
-        </label>
-        <label className={styles.field}>
-          <span className={styles.label}>Email</span>
-          <input name="email" type="email" required autoComplete="email" />
-        </label>
-        <label className={styles.field}>
-          <span className={styles.label}>Company</span>
-          <input name="company" autoComplete="organization" />
-        </label>
-        <label className={`${styles.field} ${styles.fieldWide}`}>
-          <span className={styles.label}>Tell us about the project</span>
-          <textarea name="message" rows={4} required />
-        </label>
-      </div>
+      <label className={styles.field}>
+        <span className={styles.label}>
+          Message<em>*</em>
+        </span>
+        <textarea className={styles.textarea} name="message" rows={4} required />
+      </label>
 
       <div className={styles.submitRow}>
         <p className={styles.note} role="status">
           {sent
-            ? "Thanks — we'll get back to you within one business day."
-            : "We reply to every enquiry within one business day."}
+            ? "Received — a senior engineer will reply within one business day."
+            : ""}
         </p>
-        <Button color="black" hoverLabel="Send it" icon={<ArrowRight />} type="submit">
-          Send enquiry
+        <Button hoverLabel="Send it" icon={<ArrowRight />} type="submit" className={styles.submit}>
+          Transmit
         </Button>
       </div>
     </form>

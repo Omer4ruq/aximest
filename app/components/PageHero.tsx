@@ -1,18 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import styles from "./PageHero.module.css";
 
+/**
+ * Inner-page header: the page name on the left columns, a display-size
+ * statement on the right, with room for a badge and a trailing note.
+ */
 export default function PageHero({
-  label,
   title,
-  intro,
-  index,
+  statement,
+  badge,
+  note,
+  aside,
+  rule = true,
 }: {
-  label: string;
   title: string;
-  intro?: string;
-  index?: string;
+  statement?: string;
+  badge?: string;
+  note?: string;
+  aside?: ReactNode;
+  rule?: boolean;
 }) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -21,22 +29,31 @@ export default function PageHero({
   }, []);
 
   return (
-    <header className={styles.hero} data-ready={ready}>
-      <div className={styles.meta}>
-        <span className={styles.slash}>/</span>
-        <span>{label}</span>
-        <span className={styles.index}>{index}</span>
+    <header className={styles.hero} data-ready={ready} data-rule={rule}>
+      <div className={styles.left}>
+        <h1 className={styles.title}>
+          <span className={styles.mask}>
+            <span>{title}</span>
+          </span>
+        </h1>
+        {aside ? <div className={styles.aside}>{aside}</div> : null}
       </div>
 
-      <h1 className={styles.title}>
-        {title.split(" ").map((word, i) => (
-          <span className={styles.word} key={i}>
-            <span style={{ ["--d" as string]: `${0.12 + i * 0.05}s` }}>{word}&nbsp;</span>
-          </span>
-        ))}
-      </h1>
-
-      {intro ? <p className={styles.intro}>{intro}</p> : null}
+      {statement ? (
+        <div className={styles.right}>
+          {badge ? <span className={styles.badge}>{badge}</span> : null}
+          <p className={styles.statement}>
+            {statement.split(" ").map((word, i) => (
+              <span className={styles.word} key={i}>
+                <span style={{ ["--d" as string]: `${0.12 + i * 0.025}s` }}>
+                  {word}&nbsp;
+                </span>
+              </span>
+            ))}
+          </p>
+          {note ? <p className={styles.note}>{note}</p> : null}
+        </div>
+      ) : null}
     </header>
   );
 }

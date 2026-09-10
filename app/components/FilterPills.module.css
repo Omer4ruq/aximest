@@ -1,0 +1,29 @@
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--clamp-6);
+}
+
+.pill {
+  min-width: var(--grid-col);
+  padding: var(--clamp-8) var(--clamp-14);
+  border: 1px solid currentColor;
+  border-radius: var(--clamp-3);
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 0.3s var(--ease-power2-out),
+    color 0.3s var(--ease-power2-out);
+}
+
+.pill:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+
+.pill[data-active="true"] {
+  background: var(--body-color);
+  color: var(--body-bg-color);
+}

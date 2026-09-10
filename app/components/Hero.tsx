@@ -7,8 +7,22 @@ import styles from "./Hero.module.css";
 
 const STRIPES = 15;
 
+/** Phase advance per viewport-height of scroll, in half-cycles. */
+const SCROLL_SPEED = 11.25;
+/** Phase offset between adjacent bars — sets the diagonal's steepness. */
+const SPREAD = 0.057;
+/** How far the pointer can push the wave. */
+const POINTER_INFLUENCE = 0.55;
+
+/** Triangle wave over `x`, reflecting between 1 and 0 every unit. */
+function triangle(x: number) {
+  const wrapped = ((x % 2) + 2) % 2;
+  return Math.abs(wrapped - 1);
+}
+
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const blindRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -16,24 +30,36 @@ export default function Hero() {
     return () => window.clearTimeout(id);
   }, []);
 
-  // Pointer position drives the skew of the blind stack.
+  // The blind stack is a traveling wave: scroll advances its phase, the
+  // pointer nudges it, and each bar samples the wave at its own offset.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let frame = 0;
-    const target = { x: 0.5 };
-    const current = { x: 0.5 };
+    let pointerTarget = 0.5;
+    let pointer = 0.5;
 
     const onMove = (e: PointerEvent) => {
       const rect = el.getBoundingClientRect();
-      target.x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      pointerTarget = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     };
 
     const render = () => {
-      current.x += (target.x - current.x) * 0.07;
-      el.style.setProperty("--blind-bias", current.x.toFixed(4));
+      pointer += (pointerTarget - pointer) * 0.07;
+
+      const vh = window.innerHeight || 1;
+      const phase =
+        (window.scrollY / vh) * SCROLL_SPEED + (pointer - 0.5) * POINTER_INFLUENCE;
+
+      for (let i = 0; i < blindRefs.current.length; i += 1) {
+        const bar = blindRefs.current[i];
+        if (!bar) continue;
+        const tail = triangle(phase + i * SPREAD) * 97;
+        bar.style.setProperty("--tail", `${tail.toFixed(2)}%`);
+      }
+
       frame = requestAnimationFrame(render);
     };
 
@@ -58,11 +84,14 @@ export default function Hero() {
         {site.name} — An Elite Team of Software Engineers
       </h1>
 
-      {/* Venetian-blind stack: each bar wipes in and keeps a skewed tail */}
+      {/* Venetian-blind stack: each bar wipes in, then rides the scroll wave */}
       <div className={styles.blinds} aria-hidden="true">
         {Array.from({ length: STRIPES }).map((_, i) => (
           <span
             key={i}
+            ref={(node) => {
+              blindRefs.current[i] = node;
+            }}
             className={styles.blind}
             style={{
               ["--i" as string]: String(i),

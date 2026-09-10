@@ -104,6 +104,7 @@
   --clamp-from-80-52: clamp(52px, 5.5556vw, 80px);
   --clamp-from-100-80: clamp(80px, 6.9444vw, 100px);
   --clamp-from-140-80: clamp(80px, 9.7222vw, 140px);
+  --clamp-from-160-80: clamp(80px, 11.1111vw, 160px);
   --clamp-from-200-100: clamp(100px, 13.8889vw, 200px);
 }
 
@@ -152,6 +153,15 @@ body {
 body.is-menu-open,
 body.is-locked {
   overflow: hidden;
+}
+
+/* Pages that run on black flip the theme tokens; everything built on
+   --body-color / --body-bg-color / --border follows automatically. */
+body[data-theme="dark"] {
+  --body-bg-color: var(--black);
+  --body-color: var(--white);
+  --border: 1px dashed var(--grey-800);
+  --card-bg-color: #0e0e10;
 }
 
 a {

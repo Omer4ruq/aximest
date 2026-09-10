@@ -20,14 +20,23 @@ export default function Services() {
         count={`/00${services.length}`}
       />
 
-      <ol className={styles.list}>
-        {services.map((service) => (
-          <li key={service.id} className={styles.row}>
-            <span className={styles.index} data-reveal>
-              {service.index}
-            </span>
+      {/* Stacked list: every card pins at the top and is nudged down by its
+          own index, so the headers pile up one under the next. */}
+      <ol
+        className={styles.list}
+        style={{ ["--total-items" as string]: String(services.length) }}
+      >
+        {services.map((service, i) => (
+          <li
+            key={service.id}
+            className={styles.item}
+            style={{ ["--scroll-index" as string]: String(i) }}
+          >
+            <article className={styles.card}>
+              <span className={styles.index} data-reveal>
+                {service.index}
+              </span>
 
-            <div className={styles.content}>
               <h3 className={styles.title}>
                 <Link href={service.slug} className={styles.titleLink}>
                   <span className={styles.titleMask} data-reveal="mask">
@@ -36,27 +45,34 @@ export default function Services() {
                 </Link>
               </h3>
 
-              <p className={styles.body} data-reveal>
-                {service.description}
-              </p>
+              <div className={styles.content}>
+                <p className={styles.body} data-reveal>
+                  {service.description}
+                </p>
 
-              <span data-reveal>
-                <Button
-                  href={service.slug}
-                  hoverLabel={`${service.title} →`}
-                  icon={<ArrowRight />}
-                  className={styles.button}
-                >
-                  {`Explore ${service.count} Services`}
-                </Button>
-              </span>
-            </div>
+                <span data-reveal>
+                  <Button
+                    href={service.slug}
+                    hoverLabel={`${service.title} →`}
+                    icon={<ArrowRight />}
+                    className={styles.button}
+                  >
+                    {`Explore ${service.count} Services`}
+                  </Button>
+                </span>
+              </div>
 
-            <Link href={service.slug} className={styles.panel} tabIndex={-1} aria-hidden="true">
-              <span className={styles.glyph}>
-                <ServiceGlyph id={service.id} />
-              </span>
-            </Link>
+              <Link
+                href={service.slug}
+                className={styles.media}
+                tabIndex={-1}
+                aria-hidden="true"
+              >
+                <span className={styles.glyph}>
+                  <ServiceGlyph id={service.id} />
+                </span>
+              </Link>
+            </article>
           </li>
         ))}
       </ol>
