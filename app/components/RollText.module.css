@@ -1,0 +1,51 @@
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.layer {
+  display: block;
+}
+
+.clone {
+  position: absolute;
+  inset: 0;
+}
+
+.char {
+  display: inline-block;
+  transition: transform 0.5s var(--ease-expo-out);
+  will-change: transform;
+}
+
+.layer .char {
+  transform: translateY(0);
+}
+
+.clone .char {
+  transform: translateY(110%);
+}
+
+/* hover comes from the closest interactive ancestor */
+:global(a):hover .layer .char,
+:global(button):hover .layer .char,
+:global(a):focus-visible .layer .char,
+:global(button):focus-visible .layer .char,
+.roll:hover .layer .char {
+  transform: translateY(-110%);
+}
+
+:global(a):hover .clone .char,
+:global(button):hover .clone .char,
+:global(a):focus-visible .clone .char,
+:global(button):focus-visible .clone .char,
+.roll:hover .clone .char {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .char { transition: none; }
+}

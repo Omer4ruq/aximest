@@ -1,0 +1,92 @@
+.section {
+  position: relative;
+  background: var(--white);
+  overflow: hidden;
+}
+
+.grid {
+  position: relative;
+  padding: var(--clamp-from-140-80) var(--grid-margin) var(--clamp-from-100-80);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(52px, 12.4vw, 186px);
+  line-height: 0.84;
+  letter-spacing: -0.048em;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+}
+
+.line { display: block; will-change: transform; }
+
+.mask { display: block; overflow: hidden; padding-bottom: 0.02em; }
+
+.mask > span {
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(105%);
+  transition:
+    transform 1.15s var(--ease-expo-out) var(--stagger, 0s),
+    opacity 0.4s linear var(--stagger, 0s);
+}
+
+.mask:global(.is-visible) > span { opacity: 1; transform: translateY(0); }
+
+/* per-line placement on the grid */
+.l1 .mask > span { justify-content: space-between; }
+.l2 .mask > span { justify-content: flex-start; gap: 0.06em; }
+.l3 .mask > span { justify-content: flex-start; padding-left: 0.05em; }
+.l4 .mask > span { justify-content: flex-start; padding-left: 2.95em; }
+
+.left { display: block; }
+.right { display: block; }
+
+.arrow {
+  display: block;
+  width: 0.78em;
+  height: 0.34em;
+  flex-shrink: 0;
+}
+
+/* right-hand aside sits beside the second line */
+.aside {
+  position: absolute;
+  top: calc(var(--clamp-from-140-80) + clamp(52px, 12.4vw, 186px) * 1.06);
+  right: var(--grid-margin);
+  width: calc(var(--grid-step) * 3 - var(--grid-gutter));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--clamp-20);
+}
+
+.sub {
+  font-size: clamp(15px, 1.1vw, 16px);
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+
+.button { min-width: 100%; }
+
+/* chrome strip bleeding into the footer */
+.strip {
+  height: clamp(160px, 22vw, 320px);
+  background: var(--grey-300);
+  overflow: hidden;
+}
+
+.strip :global(svg) { width: 100%; height: 100%; filter: invert(1) contrast(0.8); }
+
+@media (max-width: 999px) {
+  .aside {
+    position: static;
+    width: 100%;
+    margin-top: var(--clamp-40);
+  }
+  .button { min-width: var(--clamp-215, 214px); }
+  .l4 .mask > span { padding-left: 1.2em; }
+}

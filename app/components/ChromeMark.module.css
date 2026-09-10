@@ -1,0 +1,97 @@
+.section {
+  --p: 0;
+  position: relative;
+  height: 220vh;
+  background:
+    radial-gradient(120% 90% at 50% 25%, #f4f4f5 0%, #d6d7da 45%, #b9babe 100%);
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.labels {
+  position: absolute;
+  inset: auto var(--grid-margin) 50% var(--grid-margin);
+  transform: translateY(50%);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--grid-gutter);
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--black);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.stack { line-height: 1.25; }
+
+/* ---- chrome letterform ---- */
+.markWrap {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+}
+
+.mark {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(220px, 46vw, 660px);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+
+  background: linear-gradient(
+    172deg,
+    #ffffff 0%,
+    #c9cacd 14%,
+    #8e9095 26%,
+    #ffffff 38%,
+    #e6e7ea 48%,
+    #74767c 58%,
+    #b9d0e6 66%,
+    #ffffff 74%,
+    #9a9ca1 86%,
+    #dfe0e3 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  filter: drop-shadow(0 26px 44px rgba(0, 0, 0, 0.22));
+  transform:
+    rotateX(calc(var(--p) * 14deg))
+    rotateZ(calc(var(--p) * -7deg))
+    scale(calc(1 + var(--p) * 0.06));
+  transition: transform 0.15s linear;
+  will-change: transform;
+}
+
+.gloss {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.85) 48%,
+    transparent 58%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@media (max-width: 899px) {
+  .labels { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--clamp-10); }
+  .section { height: 170vh; }
+}

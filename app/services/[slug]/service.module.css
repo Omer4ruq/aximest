@@ -1,0 +1,93 @@
+.body {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  row-gap: var(--clamp-40);
+  align-items: start;
+  padding: var(--clamp-from-100-80) var(--grid-margin) var(--clamp-from-140-80);
+}
+
+.count {
+  grid-column: 1 / span 2;
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  text-transform: uppercase;
+  color: var(--grey-800);
+}
+
+.panel {
+  grid-column: 4 / span 5;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  background: var(--grey-100);
+  border-radius: var(--clamp-4);
+}
+
+.glyph { width: 38%; color: var(--black); }
+
+.cta {
+  grid-column: 10 / span 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--clamp-20);
+}
+
+.ctaText {
+  font-size: clamp(16px, 1.25vw, 18px);
+  line-height: 1.38;
+}
+
+.more {
+  padding: 0 var(--grid-margin) var(--clamp-from-140-80);
+}
+
+.moreTitle {
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  text-transform: uppercase;
+  color: var(--grey-800);
+  padding-bottom: var(--clamp-16);
+}
+
+.moreLink {
+  display: flex;
+  align-items: center;
+  gap: var(--clamp-24);
+  padding-block: var(--clamp-20);
+  border-top: 1px dashed var(--grey-700);
+  transition: color 0.3s var(--ease-power2-out);
+}
+
+.moreList > li:last-child .moreLink { border-bottom: 1px dashed var(--grey-700); }
+
+.moreLink:hover { color: var(--red-500); }
+
+.moreIndex {
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  color: var(--grey-700);
+}
+
+.moreName {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(24px, 2.6vw, 38px);
+  letter-spacing: -0.032em;
+  line-height: 1;
+}
+
+.moreArrow {
+  width: var(--clamp-14);
+  height: var(--clamp-14);
+  margin-left: auto;
+  transition: transform 0.4s var(--ease-power3-out);
+}
+
+.moreLink:hover .moreArrow { transform: translate(3px, -3px); }
+
+@media (max-width: 899px) {
+  .body { grid-template-columns: 1fr; }
+  .count, .panel, .cta { grid-column: 1; }
+}

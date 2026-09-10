@@ -1,0 +1,38 @@
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--black);
+  color: var(--black);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s linear;
+}
+
+.cursor::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity 0.35s var(--ease-power2-out),
+    transform 0.45s var(--ease-power3-out);
+}
+
+.cursor[data-visible="true"] { opacity: 1; }
+
+.cursor[data-hover="true"] { background: var(--red-500); }
+.cursor[data-hover="true"]::after { opacity: 0.6; transform: scale(1); }
+
+@media (hover: none), (pointer: coarse) {
+  .cursor { display: none; }
+}

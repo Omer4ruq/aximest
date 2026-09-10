@@ -1,0 +1,108 @@
+.section { background: var(--white); }
+
+.list { display: block; }
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  align-items: start;
+  padding: var(--clamp-24) var(--grid-margin) var(--clamp-from-100-80);
+  border-top: 1px dashed var(--grey-700);
+}
+
+.row:last-child { border-bottom: 1px dashed var(--grey-700); }
+
+/* ---- left index ---- */
+.index {
+  grid-column: 1 / span 2;
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  letter-spacing: 0.02em;
+  color: var(--black);
+}
+
+/* ---- middle content ---- */
+.content {
+  grid-column: 4 / span 6;
+  display: flex;
+  flex-direction: column;
+  gap: var(--clamp-70);
+  align-items: flex-start;
+}
+
+.title { align-self: stretch; }
+
+.titleLink { display: inline-block; }
+
+.titleMask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.titleMask > span {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(30px, 3.6vw, 52px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  opacity: 0;
+  transform: translateY(105%);
+  transition:
+    transform 1s var(--ease-expo-out),
+    opacity 0.4s linear,
+    color 0.3s var(--ease-power2-out);
+}
+
+.titleMask:global(.is-visible) > span { opacity: 1; transform: translateY(0); }
+
+.titleLink:hover .titleMask > span { color: var(--red-500); }
+
+.body {
+  font-size: clamp(16px, 1.25vw, 18px);
+  line-height: 1.38;
+  letter-spacing: -0.008em;
+  max-width: 46ch;
+}
+
+.button { min-width: var(--clamp-215, 214px); }
+
+/* ---- right glyph panel ---- */
+.panel {
+  grid-column: 10 / span 3;
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  min-height: var(--clamp-440);
+  background: var(--grey-100);
+  border-radius: var(--clamp-4);
+  overflow: hidden;
+  transition: background 0.45s var(--ease-power2-out);
+}
+
+.row:hover .panel { background: var(--grey-200); }
+
+.glyph {
+  width: 42%;
+  max-width: 180px;
+  aspect-ratio: 1;
+  color: var(--black);
+  transition: transform 0.7s var(--ease-power3-out);
+}
+
+.row:hover .glyph { transform: scale(1.06) rotate(-4deg); }
+
+@media (max-width: 899px) {
+  .row {
+    grid-template-columns: 1fr;
+    row-gap: var(--clamp-24);
+    padding-bottom: var(--clamp-from-80-52);
+  }
+  .index,
+  .content,
+  .panel { grid-column: 1; }
+  .content { gap: var(--clamp-24); }
+  .panel { min-height: var(--clamp-250); }
+}
