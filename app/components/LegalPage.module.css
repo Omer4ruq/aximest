@@ -13,7 +13,7 @@
 .title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(34px, 4.2vw, 60px);
+  font-size: max(34px, 4.2vw);
   line-height: 1;
   letter-spacing: -0.035em;
 }
@@ -48,7 +48,7 @@
 .heading {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(24px, 2.6vw, 38px);
+  font-size: max(24px, 2.6vw);
   line-height: 1.05;
   letter-spacing: -0.032em;
 }
@@ -57,7 +57,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--clamp-16);
-  font-size: clamp(16px, 1.25vw, 18px);
+  font-size: max(16px, 1.25vw);
   line-height: 1.4;
 }
 

@@ -28,26 +28,49 @@
 
 .heroSlash { color: var(--grey-700); }
 
+/* The stage fills the space under the top row; the media hangs on the right
+   and the wordmark sits in front of it, both ending on the same baseline. */
+.heroStage {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  margin-top: var(--clamp-40);
+  padding-inline: var(--grid-margin);
+}
+
 .heroMedia {
   position: absolute;
-  top: calc(var(--clamp-120) - var(--clamp-40));
+  top: 0;
   right: var(--grid-margin);
+  bottom: 0;
   width: calc(var(--grid-step) * 6 - var(--grid-gutter));
-  aspect-ratio: 1;
   margin: 0;
   overflow: hidden;
   background: #111;
 }
 
+.heroMedia :global(svg) { width: 100%; height: 100%; }
+
+.heroCounter {
+  position: absolute;
+  left: var(--clamp-8);
+  bottom: var(--clamp-10);
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--white);
+}
+
 .heroAbbr {
   position: relative;
   z-index: 1;
-  margin-top: auto;
-  padding-inline: var(--grid-margin);
+  display: block;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(72px, 21vw, 300px);
-  line-height: 0.86;
+  font-size: max(72px, 21vw);
+  line-height: 0.84;
   letter-spacing: -0.05em;
   color: var(--white);
   white-space: nowrap;
@@ -137,26 +160,49 @@
 .statement {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(28px, 3.4vw, 50px);
+  font-size: max(28px, 3.4vw);
   line-height: 1.06;
   letter-spacing: -0.032em;
 }
 
 .intro {
-  font-size: clamp(16px, 1.25vw, 18px);
+  font-size: max(16px, 1.25vw);
   line-height: 1.35;
 }
 
 .caps { margin-top: var(--clamp-from-52-32); }
 
 .cap {
+  position: relative;
   display: grid;
   grid-template-columns: var(--clamp-100) 1fr;
   gap: var(--grid-gutter);
   align-items: baseline;
   padding: var(--clamp-14) 0;
-  border-top: var(--border);
+
+  opacity: 0;
+  transform: translateX(-4em);
+  transition:
+    opacity 0.6s var(--ease-power2-out),
+    transform 0.6s var(--ease-power2-out);
+  transition-delay: calc(var(--index, 0) * 0.1s);
 }
+
+.cap::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  border-top: var(--border);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.6s var(--ease-power3-out);
+  transition-delay: calc(var(--index, 0) * 0.1s);
+}
+
+.caps:global(.is-inview) .cap { opacity: 1; transform: translateX(0); }
+.caps:global(.is-inview) .cap::before { clip-path: inset(0); }
 
 .cap:last-child { border-bottom: var(--border); }
 
@@ -169,7 +215,7 @@
 .capName {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(18px, 1.9vw, 27px);
+  font-size: max(18px, 1.9vw);
   line-height: 1;
   letter-spacing: -0.03em;
   text-transform: uppercase;
@@ -179,9 +225,11 @@
    Sub-services — back on white, staggered card grid
    ============================================================ */
 .sub {
-  padding: var(--clamp-from-140-80) var(--grid-margin) var(--clamp-from-140-80);
-  background: var(--white);
-  color: var(--black);
+  /* Tight enough that the cards sit where the reference puts them when the
+     page turns light: section top ~89px, cards ~260px down the viewport. */
+  padding: var(--clamp-45) var(--grid-margin) var(--clamp-from-140-80);
+  /* transparent so the theme-morph canvas behind the page shows through */
+  color: var(--body-color);
 }
 
 .subHead {
@@ -189,14 +237,14 @@
   align-items: baseline;
   justify-content: space-between;
   gap: var(--clamp-24);
-  margin-bottom: var(--clamp-from-80-52);
+  margin-bottom: var(--clamp-90);
 }
 
 .subTitle,
 .subCount {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(28px, 3.3vw, 46px);
+  font-size: max(28px, 3.3vw);
   line-height: 1;
   letter-spacing: -0.035em;
 }
@@ -220,86 +268,151 @@
   .cards { grid-template-columns: 1fr; }
 }
 
-/* each column in a row sits a little lower than the last */
-.cardItem:nth-child(4n + 2) { margin-top: var(--clamp-45); }
-.cardItem:nth-child(4n + 3) { margin-top: var(--clamp-90); }
-.cardItem:nth-child(4n) { margin-top: var(--clamp-140); }
+/* Per-column drift amounts. Each card is pushed down by its own offset and
+   eases back to zero as the grid rises, so columns settle at different rates. */
+.cards {
+  --col-offset-xs: max(20px, 2vw);
+  --col-offset-sm: max(80px, 6vw);
+  --col-offset-md: max(120px, 9vw);
+  --col-offset-lg: max(180px, 14vw);
+}
 
+.cardItem { --card-offset: var(--col-offset-xs); will-change: transform; }
+.cardItem:nth-child(2n) { --card-offset: var(--col-offset-md); }
+.cardItem:nth-child(3n + 2) { --card-offset: var(--col-offset-sm); }
+.cardItem:nth-child(3n) { --card-offset: var(--col-offset-lg); }
+.cardItem:nth-child(4n + 2) { --card-offset: var(--col-offset-sm); }
+.cardItem:nth-child(4n + 3) { --card-offset: var(--col-offset-lg); }
+.cardItem:nth-child(4n) { --card-offset: var(--col-offset-md); }
+
+/* Card geometry taken from the reference: 4 per row, 440px floor, and a
+   red wash on hover that carries the header rule and footer with it. */
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--clamp-20);
-  height: 100%;
-  padding: var(--clamp-14);
-  background: var(--grey-100);
+  flex: 1;
+  min-height: max(440px, 30.5556vw);
   border-radius: var(--clamp-4);
-  transition: background 0.4s var(--ease-power2-out);
+  background: var(--card-bg-color);
+  color: var(--card-color);
+  transition:
+    background-color 0.3s var(--ease-power2-out),
+    color 0.3s var(--ease-power2-out);
 }
 
-.card:hover { background: var(--grey-200); }
+.card:hover,
+.card:focus-within {
+  background: var(--card-hover-bg-color);
+  color: var(--card-hover-color);
+}
 
-.cardHead { display: flex; align-items: flex-start; justify-content: space-between; }
+.cardLink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
 
-.cardIndex {
+.cardLink:focus-visible {
+  outline: 2px dashed currentColor;
+  outline-offset: -2px;
+}
+
+/* ---- header ---- */
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--clamp-10);
+  padding: var(--clamp-12);
+}
+
+.cardLabel {
   font-family: var(--font-mono);
-  font-size: var(--clamp-10);
-  line-height: 1.25;
+  font-size: var(--clamp-12);
+  line-height: 1.1;
   text-transform: uppercase;
-  color: var(--grey-800);
+  letter-spacing: 0.02em;
 }
 
-.cardDot {
-  width: 7px;
-  height: 7px;
+.cardLabel > span { display: block; }
+
+.cardIndicator {
+  flex-shrink: 0;
+  width: var(--clamp-11);
+  height: var(--clamp-11);
   border-radius: 50%;
-  background: var(--grey-400);
-  transition: background 0.3s var(--ease-power2-out);
+  background: var(--grey-300);
+  transition: background-color 0.6s var(--ease-power2-out);
 }
 
-.card:hover .cardDot { background: var(--red-500); }
+.card:hover .cardIndicator,
+.card:focus-within .cardIndicator { background: var(--card-hover-color); }
+
+/* ---- content: title at the top, copy pushed to the bottom ---- */
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  row-gap: var(--clamp-40);
+  padding: var(--clamp-40) var(--clamp-12) var(--clamp-30);
+}
 
 .cardTitle {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(22px, 2.1vw, 30px);
-  line-height: 1.04;
+  font-size: max(24px, 2.22vw);
+  line-height: 1;
   letter-spacing: -0.032em;
 }
 
-.cardBody {
+.cardText {
   margin-top: auto;
-  padding-bottom: var(--clamp-14);
-  border-bottom: var(--border);
-  font-size: var(--clamp-14);
-  line-height: 1.35;
-  color: var(--grey-900);
+  font-size: var(--clamp-16);
+  line-height: 1.1;
 }
+
+.cardText p { margin: 0; }
+
+/* ---- footer ---- */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  min-height: var(--clamp-50);
+  padding: 0 var(--clamp-12);
+  border-top: 1px dashed var(--grey-600);
+  transition: border-color 0.3s var(--ease-power2-out);
+}
+
+.card:hover .cardFooter,
+.card:focus-within .cardFooter { border-top-color: var(--card-hover-color); }
 
 .cardCta {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   font-family: var(--font-mono);
-  font-size: var(--clamp-11);
+  font-size: var(--clamp-12);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
 
-.cardArrow {
-  width: var(--clamp-12);
-  height: var(--clamp-10);
-  transition: transform 0.4s var(--ease-power3-out);
-}
+.cardArrow { width: var(--clamp-12); height: var(--clamp-10); }
 
-.card:hover .cardArrow { transform: translateX(3px); }
+/* the arrow blinks while the card is hovered, as the reference does */
+.card:hover .cardArrow,
+.card:focus-within .cardArrow {
+  animation: blink-animation 0.3s step-end infinite alternate;
+}
 
 /* ============================================================
    Other services
    ============================================================ */
 .more {
   padding: 0 var(--grid-margin) var(--clamp-from-140-80);
-  background: var(--white);
-  color: var(--black);
+  color: var(--body-color);
 }
 
 .moreTitle {
@@ -316,11 +429,11 @@
   align-items: center;
   gap: var(--clamp-24);
   padding-block: var(--clamp-20);
-  border-top: 1px dashed var(--grey-700);
+  border-top: var(--border);
   transition: color 0.3s var(--ease-power2-out);
 }
 
-.more li:last-child .moreLink { border-bottom: 1px dashed var(--grey-700); }
+.more li:last-child .moreLink { border-bottom: var(--border); }
 .moreLink:hover { color: var(--red-500); }
 
 .moreIndex {
@@ -332,7 +445,7 @@
 .moreName {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(24px, 2.6vw, 38px);
+  font-size: max(24px, 2.6vw);
   line-height: 1;
   letter-spacing: -0.032em;
 }
@@ -356,7 +469,7 @@
 }
 
 .moreCta p {
-  font-size: clamp(16px, 1.25vw, 18px);
+  font-size: max(16px, 1.25vw);
   line-height: 1.35;
 }
 
@@ -367,8 +480,17 @@
   .hero { padding-top: calc(var(--clamp-70) + var(--clamp-90)); }
   .heroTop { grid-template-columns: auto auto 1fr; }
   .heroIndex, .heroTop .heroSlash, .heroName { grid-column: auto; }
-  .heroMedia { position: relative; top: auto; right: auto; width: 100%; margin: var(--clamp-32) 0 0; }
-  .heroAbbr { font-size: clamp(64px, 24vw, 300px); }
+  .heroStage { flex-direction: column; align-items: stretch; gap: var(--clamp-24); }
+  .heroMedia {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+  }
+  .heroAbbr { padding-inline: 0; }
+  .heroAbbr { font-size: max(64px, 24vw); }
   .heroFoot { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--clamp-8); }
 
   .body { grid-template-columns: 1fr; }
@@ -376,7 +498,16 @@
   .bodyRight { grid-column: 1; }
 
   .cardItem,
+  .cardItem:nth-child(2n),
+  .cardItem:nth-child(3n),
+  .cardItem:nth-child(3n + 2),
   .cardItem:nth-child(4n + 2),
   .cardItem:nth-child(4n + 3),
-  .cardItem:nth-child(4n) { margin-top: 0; }
+  .cardItem:nth-child(4n) { --card-offset: var(--col-offset-xs); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cap,
+  .cap::before { transition: none; }
+  .cardItem { transform: none !important; }
 }

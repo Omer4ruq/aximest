@@ -4,6 +4,7 @@ import Link from "next/link";
 import SectionHead from "./SectionHead";
 import Button from "./Button";
 import ServiceGlyph from "./ServiceGlyph";
+import ScrambleText from "./Scramble";
 import { ArrowRight } from "./Icons";
 import { useRevealGroup } from "../hooks/useReveal";
 import { services } from "../lib/site";
@@ -33,9 +34,9 @@ export default function Services() {
             style={{ ["--scroll-index" as string]: String(i) }}
           >
             <article className={styles.card}>
-              <span className={styles.index} data-reveal>
+              <ScrambleText className={styles.index}>
                 {service.index}
-              </span>
+              </ScrambleText>
 
               <h3 className={styles.title}>
                 <Link href={service.slug} className={styles.titleLink}>
@@ -53,7 +54,6 @@ export default function Services() {
                 <span data-reveal>
                   <Button
                     href={service.slug}
-                    hoverLabel={`${service.title} →`}
                     icon={<ArrowRight />}
                     className={styles.button}
                   >

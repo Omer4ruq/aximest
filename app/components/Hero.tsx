@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown } from "./Icons";
+import ScrambleText from "./Scramble";
 import { site } from "../lib/site";
 import styles from "./Hero.module.css";
 
@@ -74,10 +75,10 @@ export default function Hero() {
   return (
     <section className={styles.hero} ref={ref} data-ready={ready}>
       <div className={styles.meta}>
-        <span>{site.mark}</span>
-        <span>{site.city}</span>
-        <span>{site.code}</span>
-        <span>{site.codeLabel}</span>
+        <ScrambleText delay={0}>{site.mark}</ScrambleText>
+        <ScrambleText delay={0.2}>{site.city}</ScrambleText>
+        <ScrambleText delay={0.4}>{site.code}</ScrambleText>
+        <ScrambleText delay={0.6}>{site.codeLabel}</ScrambleText>
       </div>
 
       <h1 className="sr-only">

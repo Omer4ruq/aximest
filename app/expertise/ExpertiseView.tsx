@@ -16,16 +16,12 @@ export default function ExpertiseView() {
 
   return (
     <>
-      <PageTheme theme="dark" />
+      <PageTheme base="dark" />
 
       <div className={styles.layout}>
         <div className={styles.left}>
           <div className={styles.intro}>
-            <h1 className={styles.title}>
-              <span className={styles.mask}>
-                <span>Core-Level Control</span>
-              </span>
-            </h1>
+            <h1 className={styles.title}>Core-Level Control</h1>
             <p className={styles.body}>
               {site.name}&apos;s powerhouse team of senior full-stack developers
               brings unmatched expertise and knowledge across a wide range of

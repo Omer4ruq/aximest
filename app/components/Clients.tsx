@@ -9,6 +9,7 @@ import "swiper/css/effect-creative";
 import SectionHead from "./SectionHead";
 import Button from "./Button";
 import Media from "./Media";
+import ScrambleText from "./Scramble";
 import { ArrowRight } from "./Icons";
 import { useRevealGroup } from "../hooks/useReveal";
 import { clients } from "../lib/site";
@@ -105,7 +106,9 @@ export default function Clients() {
             {clients.map((client, i) => (
               <div className={`swiper-slide ${styles.slide}`} key={client.index}>
                 <article className={styles.card}>
-                  <span className={styles.index}>{client.index}</span>
+                  <ScrambleText className={styles.index}>
+                    {client.index}
+                  </ScrambleText>
 
                   <figure className={styles.media}>
                     <Media seed={i} />
@@ -117,7 +120,6 @@ export default function Clients() {
                     <p className={styles.body}>{client.description}</p>
                     <Button
                       href="/contact"
-                      hoverLabel="Get in touch"
                       icon={<ArrowRight />}
                       className={styles.button}
                     >

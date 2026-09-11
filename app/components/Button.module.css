@@ -159,46 +159,4 @@
   flex-shrink: 0;
 }
 
-.label {
-  display: inline-block;
-}
-
-/* ---- hover label roll ---- */
-.swap {
-  position: relative;
-  display: inline-grid;
-  overflow: hidden;
-}
-
-.swapInner {
-  grid-area: 1 / 1;
-  display: block;
-}
-
-.swapItem {
-  display: block;
-  font-style: normal;
-  transition: transform 0.42s var(--ease-power3-out);
-  transform: translateY(0);
-}
-
-.swapItem + .swapItem {
-  position: absolute;
-  inset: 0;
-  transform: translateY(110%);
-}
-
-.button:hover .swapItem {
-  transform: translateY(-110%);
-}
-
-.button:hover .swapItem + .swapItem {
-  transform: translateY(0);
-}
-
-.ghost {
-  grid-area: 1 / 1;
-  font-style: normal;
-  visibility: hidden;
-  pointer-events: none;
-}
+.label { display: inline-block; }

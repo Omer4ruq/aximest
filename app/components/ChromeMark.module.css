@@ -51,7 +51,7 @@
   position: relative;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(220px, 46vw, 660px);
+  font-size: max(220px, 46vw);
   line-height: 0.8;
   letter-spacing: -0.06em;
 

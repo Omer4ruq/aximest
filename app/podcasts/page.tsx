@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import PageHero from "../components/PageHero";
+import RevealGrid from "../components/RevealGrid";
 import Button from "../components/Button";
 import Media from "../components/Media";
+import ScrambleText from "../components/Scramble";
 import { ArrowUpRight } from "../components/Icons";
 import { podcasts, site } from "../lib/site";
 import styles from "./podcasts.module.css";
@@ -24,16 +26,18 @@ export default function PodcastsPage() {
         }
       />
 
-      <ul className={styles.grid}>
+      <RevealGrid className={styles.grid}>
         {podcasts.map((show, i) => (
           <li key={show.title} className={styles.card}>
             <div className={styles.tags}>
-              {show.tags.map((tag) => (
-                <span key={tag} className={styles.tag}>
+              {show.tags.map((tag, ti) => (
+                <ScrambleText key={tag} className={styles.tag} delay={ti * 0.07}>
                   {tag}
-                </span>
+                </ScrambleText>
               ))}
-              <span className={styles.status}>{show.status}</span>
+              <ScrambleText className={styles.status} delay={0.5}>
+                {show.status}
+              </ScrambleText>
             </div>
 
             <p className={styles.host}>Hosted by {show.host}</p>
@@ -51,7 +55,7 @@ export default function PodcastsPage() {
             </figure>
           </li>
         ))}
-      </ul>
+      </RevealGrid>
     </>
   );
 }

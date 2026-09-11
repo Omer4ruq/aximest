@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Registered so getComputedStyle resolves the clamp() to real pixels —
+   the card parallax reads this value every frame. */
+@property --card-offset {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
 /* ============================================================
    AXIMEST — design tokens
    ============================================================ */
@@ -34,13 +42,17 @@
   --body-bg-color: var(--white);
   --body-color: var(--black);
   --border: 1px dashed var(--grey-700);
+
+  /* Cards read off these so a theme flip repaints them automatically. */
   --card-bg-color: var(--grey-100);
+  --card-color: var(--black);
   --card-hover-bg-color: var(--red-500);
+  --card-hover-color: var(--black);
 
   /* Grid */
   --grid-columns: 12;
-  --grid-gutter: 16px;
-  --grid-margin: 18px;
+  --grid-gutter: var(--clamp-16);
+  --grid-margin: var(--clamp-16);
   --grid-col: calc((100vw - var(--grid-margin) * 2 - var(--grid-gutter) * 11) / 12);
   --grid-step: calc(var(--grid-col) + var(--grid-gutter));
 
@@ -56,56 +68,56 @@
 
 /* Fluid clamp scale, mirroring a 1440px design width */
 :root {
-  --clamp-1: clamp(1px, 0.0694vw, 1px);
-  --clamp-2: clamp(2px, 0.1389vw, 2px);
-  --clamp-3: clamp(3px, 0.2083vw, 3px);
-  --clamp-4: clamp(4px, 0.2778vw, 4px);
-  --clamp-6: clamp(6px, 0.4167vw, 6px);
-  --clamp-8: clamp(8px, 0.5556vw, 8px);
-  --clamp-10: clamp(10px, 0.6944vw, 10px);
-  --clamp-11: clamp(11px, 0.7639vw, 11px);
-  --clamp-12: clamp(12px, 0.8333vw, 12px);
-  --clamp-13: clamp(13px, 0.9028vw, 13px);
-  --clamp-14: clamp(14px, 0.9722vw, 14px);
-  --clamp-16: clamp(16px, 1.1111vw, 16px);
-  --clamp-18: clamp(18px, 1.25vw, 18px);
-  --clamp-19: clamp(19px, 1.3194vw, 19px);
-  --clamp-20: clamp(20px, 1.3889vw, 20px);
-  --clamp-24: clamp(24px, 1.6667vw, 24px);
-  --clamp-28: clamp(28px, 1.9444vw, 28px);
-  --clamp-30: clamp(30px, 2.0833vw, 30px);
-  --clamp-32: clamp(32px, 2.2222vw, 32px);
-  --clamp-36: clamp(36px, 2.5vw, 36px);
-  --clamp-40: clamp(40px, 2.7778vw, 40px);
-  --clamp-45: clamp(45px, 3.125vw, 45px);
-  --clamp-48: clamp(48px, 3.3333vw, 48px);
-  --clamp-52: clamp(52px, 3.6111vw, 52px);
-  --clamp-55: clamp(55px, 3.8194vw, 55px);
-  --clamp-56: clamp(56px, 3.8889vw, 56px);
-  --clamp-60: clamp(60px, 4.1667vw, 60px);
-  --clamp-64: clamp(64px, 4.4444vw, 64px);
-  --clamp-70: clamp(70px, 4.8611vw, 70px);
-  --clamp-80: clamp(80px, 5.5556vw, 80px);
-  --clamp-90: clamp(90px, 6.25vw, 90px);
-  --clamp-100: clamp(100px, 6.9444vw, 100px);
-  --clamp-120: clamp(120px, 8.3333vw, 120px);
-  --clamp-140: clamp(140px, 9.7222vw, 140px);
-  --clamp-190: clamp(190px, 13.1944vw, 190px);
-  --clamp-200: clamp(200px, 13.8889vw, 200px);
-  --clamp-250: clamp(250px, 17.3611vw, 250px);
-  --clamp-300: clamp(300px, 20.8333vw, 300px);
-  --clamp-340: clamp(340px, 23.6111vw, 340px);
-  --clamp-440: clamp(440px, 30.5556vw, 440px);
+  --clamp-1: max(1px, 0.0694vw);
+  --clamp-2: max(2px, 0.1389vw);
+  --clamp-3: max(3px, 0.2083vw);
+  --clamp-4: max(4px, 0.2778vw);
+  --clamp-6: max(6px, 0.4167vw);
+  --clamp-8: max(8px, 0.5556vw);
+  --clamp-10: max(10px, 0.6944vw);
+  --clamp-11: max(11px, 0.7639vw);
+  --clamp-12: max(12px, 0.8333vw);
+  --clamp-13: max(13px, 0.9028vw);
+  --clamp-14: max(14px, 0.9722vw);
+  --clamp-16: max(16px, 1.1111vw);
+  --clamp-18: max(18px, 1.25vw);
+  --clamp-19: max(19px, 1.3194vw);
+  --clamp-20: max(20px, 1.3889vw);
+  --clamp-24: max(24px, 1.6667vw);
+  --clamp-28: max(28px, 1.9444vw);
+  --clamp-30: max(30px, 2.0833vw);
+  --clamp-32: max(32px, 2.2222vw);
+  --clamp-36: max(36px, 2.5vw);
+  --clamp-40: max(40px, 2.7778vw);
+  --clamp-45: max(45px, 3.125vw);
+  --clamp-48: max(48px, 3.3333vw);
+  --clamp-52: max(52px, 3.6111vw);
+  --clamp-55: max(55px, 3.8194vw);
+  --clamp-56: max(56px, 3.8889vw);
+  --clamp-60: max(60px, 4.1667vw);
+  --clamp-64: max(64px, 4.4444vw);
+  --clamp-70: max(70px, 4.8611vw);
+  --clamp-80: max(80px, 5.5556vw);
+  --clamp-90: max(90px, 6.25vw);
+  --clamp-100: max(100px, 6.9444vw);
+  --clamp-120: max(120px, 8.3333vw);
+  --clamp-140: max(140px, 9.7222vw);
+  --clamp-190: max(190px, 13.1944vw);
+  --clamp-200: max(200px, 13.8889vw);
+  --clamp-250: max(250px, 17.3611vw);
+  --clamp-300: max(300px, 20.8333vw);
+  --clamp-340: max(340px, 23.6111vw);
+  --clamp-440: max(440px, 30.5556vw);
 
   /* responsive pairs: from desktop → mobile floor */
-  --clamp-from-24-16: clamp(16px, 1.6667vw, 24px);
-  --clamp-from-40-24: clamp(24px, 2.7778vw, 40px);
-  --clamp-from-52-32: clamp(32px, 3.6111vw, 52px);
-  --clamp-from-80-52: clamp(52px, 5.5556vw, 80px);
-  --clamp-from-100-80: clamp(80px, 6.9444vw, 100px);
-  --clamp-from-140-80: clamp(80px, 9.7222vw, 140px);
-  --clamp-from-160-80: clamp(80px, 11.1111vw, 160px);
-  --clamp-from-200-100: clamp(100px, 13.8889vw, 200px);
+  --clamp-from-24-16: max(16px, 1.6667vw);
+  --clamp-from-40-24: max(24px, 2.7778vw);
+  --clamp-from-52-32: max(32px, 3.6111vw);
+  --clamp-from-80-52: max(52px, 5.5556vw);
+  --clamp-from-100-80: max(80px, 6.9444vw);
+  --clamp-from-140-80: max(80px, 9.7222vw);
+  --clamp-from-160-80: max(80px, 11.1111vw);
+  --clamp-from-200-100: max(100px, 13.8889vw);
 }
 
 @theme inline {
@@ -161,7 +173,12 @@ body[data-theme="dark"] {
   --body-bg-color: var(--black);
   --body-color: var(--white);
   --border: 1px dashed var(--grey-800);
-  --card-bg-color: #0e0e10;
+
+  /* On black the cards invert to white; the hover stays red either way. */
+  --card-bg-color: var(--white);
+  --card-color: var(--black);
+  --card-hover-bg-color: var(--red-500);
+  --card-hover-color: var(--black);
 }
 
 a {
@@ -249,7 +266,7 @@ html.lenis, html.lenis body { height: auto; }
 /* Display type */
 .t-display-xl {
   font-family: var(--font-display);
-  font-size: clamp(48px, 11.2vw, 162px);
+  font-size: max(48px, 11.2vw);
   line-height: 0.86;
   letter-spacing: -0.035em;
   font-weight: 500;
@@ -257,7 +274,7 @@ html.lenis, html.lenis body { height: auto; }
 
 .t-display-l {
   font-family: var(--font-display);
-  font-size: clamp(38px, 6.6vw, 96px);
+  font-size: max(38px, 6.6vw);
   line-height: 0.92;
   letter-spacing: -0.03em;
   font-weight: 500;
@@ -265,7 +282,7 @@ html.lenis, html.lenis body { height: auto; }
 
 .t-display-m {
   font-family: var(--font-display);
-  font-size: clamp(30px, 4.2vw, 60px);
+  font-size: max(30px, 4.2vw);
   line-height: 1;
   letter-spacing: -0.025em;
   font-weight: 500;
@@ -273,14 +290,14 @@ html.lenis, html.lenis body { height: auto; }
 
 .t-display-s {
   font-family: var(--font-display);
-  font-size: clamp(24px, 2.6vw, 38px);
+  font-size: max(24px, 2.6vw);
   line-height: 1.05;
   letter-spacing: -0.02em;
   font-weight: 500;
 }
 
 .t-body-l {
-  font-size: clamp(17px, 1.53vw, 22px);
+  font-size: max(17px, 1.53vw);
   line-height: 1.35;
   letter-spacing: -0.01em;
 }

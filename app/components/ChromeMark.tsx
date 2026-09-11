@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import ScrambleText from "./Scramble";
 import { services, site } from "../lib/site";
 import styles from "./ChromeMark.module.css";
 
@@ -41,14 +42,16 @@ export default function ChromeMark() {
     <section className={styles.section} ref={ref}>
       <div className={styles.sticky}>
         <div className={styles.labels}>
-          <span>{site.mark}</span>
+          <ScrambleText delay={0}>{site.mark}</ScrambleText>
           <ul className={styles.stack}>
-            {services.map((s) => (
-              <li key={s.id}>{s.title}</li>
+            {services.map((service, i) => (
+              <li key={service.id}>
+                <ScrambleText delay={0.2 + i * 0.1}>{service.title}</ScrambleText>
+              </li>
             ))}
           </ul>
-          <span>{site.code}</span>
-          <span>{site.codeLabel}</span>
+          <ScrambleText delay={0.4}>{site.code}</ScrambleText>
+          <ScrambleText delay={0.6}>{site.codeLabel}</ScrambleText>
         </div>
 
         <div className={styles.markWrap} aria-hidden="true">

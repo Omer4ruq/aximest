@@ -19,7 +19,7 @@ export default function NotFound() {
         / Error 404
       </span>
       <h1 className="t-display-l">This page went fwrd without us.</h1>
-      <Button href="/" color="black" hoverLabel="Take me home" icon={<ArrowRight />}>
+      <Button href="/" color="black" icon={<ArrowRight />}>
         Back to home
       </Button>
       <Link href="/contact" className="u-mono" style={{ color: "var(--grey-800)" }}>

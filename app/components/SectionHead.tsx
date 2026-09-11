@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import ScrambleText from "./Scramble";
 import styles from "./SectionHead.module.css";
 
 /**
@@ -24,7 +25,7 @@ export default function SectionHead({
     <div className={styles.head} id={id}>
       <div className={styles.label} data-reveal>
         <span className={styles.slash}>/</span>
-        <span>{label}</span>
+        <ScrambleText delay={0.1}>{label}</ScrambleText>
       </div>
 
       <h2 className={styles.title}>
@@ -42,9 +43,9 @@ export default function SectionHead({
 
       <div className={styles.aside}>
         {count ? (
-          <span className={styles.count} data-reveal>
+          <ScrambleText className={styles.count} delay={0.3}>
             {count}
-          </span>
+          </ScrambleText>
         ) : null}
         {aside ? (
           <span className={styles.asideSlot} data-reveal>

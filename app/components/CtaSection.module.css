@@ -12,7 +12,7 @@
 .title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(52px, 12.4vw, 186px);
+  font-size: max(52px, 12.4vw);
   line-height: 0.84;
   letter-spacing: -0.048em;
   text-transform: uppercase;
@@ -55,7 +55,7 @@
 /* right-hand aside sits beside the second line */
 .aside {
   position: absolute;
-  top: calc(var(--clamp-from-140-80) + clamp(52px, 12.4vw, 186px) * 1.06);
+  top: calc(var(--clamp-from-140-80) + max(52px, 12.4vw) * 1.06);
   right: var(--grid-margin);
   width: calc(var(--grid-step) * 3 - var(--grid-gutter));
   display: flex;
@@ -65,7 +65,7 @@
 }
 
 .sub {
-  font-size: clamp(15px, 1.1vw, 16px);
+  font-size: max(15px, 1.1vw);
   line-height: 1.32;
   letter-spacing: -0.005em;
 }
@@ -74,7 +74,7 @@
 
 /* chrome strip bleeding into the footer */
 .strip {
-  height: clamp(160px, 22vw, 320px);
+  height: max(160px, 22vw);
   background: var(--grey-300);
   overflow: hidden;
 }

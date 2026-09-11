@@ -67,7 +67,7 @@
   grid-area: 1 / 4 / 2 / 13;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(28px, 2.92vw, 42px);
+  font-size: max(28px, 2.92vw);
   line-height: 1;
   letter-spacing: -0.02em;
 }

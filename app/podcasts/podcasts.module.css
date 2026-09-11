@@ -15,6 +15,20 @@
   padding: var(--clamp-16);
   background: var(--grey-100);
   border-radius: var(--clamp-4);
+
+  opacity: 0;
+  transform: translateY(3em);
+  transition:
+    opacity 0.3s linear var(--stagger, 0s),
+    transform 0.6s var(--ease-power2-out) var(--stagger, 0s);
+}
+
+.grid:global(.is-inview) .card { opacity: 1; transform: translateY(0); }
+
+.grid > li:nth-child(2n) .card { --stagger: 0.1s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card { opacity: 1; transform: none; transition: none; }
 }
 
 .tags {
@@ -47,14 +61,14 @@
 }
 
 .host {
-  font-size: clamp(16px, 1.25vw, 18px);
+  font-size: max(16px, 1.25vw);
   line-height: 1.2;
 }
 
 .title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(28px, 3.3vw, 46px);
+  font-size: max(28px, 3.3vw);
   line-height: 1.02;
   letter-spacing: -0.035em;
 }
@@ -64,7 +78,7 @@
   margin-left: auto;
   padding-bottom: var(--clamp-16);
   border-bottom: var(--border);
-  font-size: clamp(16px, 1.25vw, 18px);
+  font-size: max(16px, 1.25vw);
   line-height: 1.32;
   text-indent: var(--grid-col);
 }
@@ -93,7 +107,7 @@
   color: var(--white);
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(18px, 2vw, 28px);
+  font-size: max(18px, 2vw);
   line-height: 1;
   letter-spacing: -0.03em;
   text-transform: uppercase;

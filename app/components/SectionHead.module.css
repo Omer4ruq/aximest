@@ -23,7 +23,7 @@
   grid-column: 4 / span 6;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(32px, 4.2vw, 60px);
+  font-size: max(32px, 4.2vw);
   line-height: 1.05;
   letter-spacing: -0.035em;
 }

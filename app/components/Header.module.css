@@ -167,84 +167,115 @@ body[data-theme="dark"] .header:not([data-open="true"]) .cta {
   .cta { display: none; }
 }
 
-/* ---------- nav panel ---------- */
-.panel {
+/* ============================================================
+   Navigation panel
+   Four grid columns wide, anchored under the identity card, with the
+   rest of the page blurred behind it rather than covered.
+   ============================================================ */
+.overlay {
   position: fixed;
   inset: 0;
+  z-index: -2;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+  opacity: 0;
+  visibility: hidden;
+  cursor: default;
+  transition:
+    opacity 0.5s var(--ease-power2-out),
+    visibility 0s linear 0.5s;
+}
+
+.overlay[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.5s var(--ease-power2-out),
+    visibility 0s linear 0s;
+}
+
+.panel {
+  position: fixed;
+  top: var(--grid-margin);
+  left: var(--grid-margin);
+  bottom: var(--grid-margin);
   z-index: -1;
+  width: calc(var(--grid-step) * 4 - var(--grid-gutter));
+  display: flex;
+  flex-direction: column;
   background: var(--grey-200);
   color: var(--black);
+  border-radius: var(--clamp-4);
+  /* the identity card sits on top of this; clear its height */
+  padding-top: calc(var(--clamp-120) + var(--clamp-70));
+  overflow: hidden;
   clip-path: inset(0 0 100% 0);
   visibility: hidden;
   transition:
-    clip-path 0.85s var(--ease-expo-out),
-    visibility 0s linear 0.85s;
-  overflow-y: auto;
-  pointer-events: none;
+    clip-path 0.7s var(--ease-expo-out),
+    visibility 0s linear 0.7s;
 }
 
 .panel[data-open="true"] {
   clip-path: inset(0 0 0 0);
   visibility: visible;
-  pointer-events: auto;
   transition:
-    clip-path 0.85s var(--ease-expo-out),
+    clip-path 0.7s var(--ease-expo-out),
     visibility 0s linear 0s;
 }
 
-.panelInner {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  padding: calc(var(--clamp-120) + var(--clamp-40)) var(--grid-margin) var(--clamp-32);
+.menuList {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
 }
 
-.menuList { flex: 1; }
+.menuList::-webkit-scrollbar { display: none; }
 
 .menuItem {
   border-top: 1px dashed var(--grey-500);
   opacity: 0;
-  transform: translateY(1.2em);
+  transform: translateY(0.8em);
   transition:
     opacity 0.4s linear,
-    transform 0.7s var(--ease-power3-out);
+    transform 0.6s var(--ease-power3-out);
 }
-
-.menuItem:last-child { border-bottom: 1px dashed var(--grey-500); }
 
 .panel[data-open="true"] .menuItem {
   opacity: 1;
   transform: none;
-  transition-delay: calc(0.18s + var(--i) * 0.06s);
+  transition-delay: calc(0.16s + var(--i) * 0.05s);
 }
 
 .menuRow {
   display: flex;
   align-items: center;
-  gap: var(--clamp-16);
-  padding-block: var(--clamp-14);
+  gap: var(--clamp-14);
+  min-height: var(--clamp-56);
+  padding-inline: var(--clamp-16);
 }
 
 .menuNum {
+  width: var(--clamp-90);
+  flex-shrink: 0;
   font-family: var(--font-mono);
-  font-size: var(--clamp-11);
+  font-size: var(--clamp-12);
   color: var(--grey-800);
 }
 
 .menuLink {
   font-family: var(--font-display);
-  font-size: clamp(30px, 6vw, 56px);
+  font-size: var(--clamp-24);
   font-weight: 500;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.025em;
   line-height: 1;
-  text-transform: uppercase;
 }
 
 .menuToggle {
   position: relative;
   margin-left: auto;
-  width: var(--clamp-32);
-  height: var(--clamp-32);
+  width: var(--clamp-24);
+  height: var(--clamp-24);
   cursor: pointer;
 }
 
@@ -252,7 +283,7 @@ body[data-theme="dark"] .header:not([data-open="true"]) .cta {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 14px;
+  width: 12px;
   height: 1.5px;
   background: currentColor;
   transform: translate(-50%, -50%);
@@ -267,20 +298,20 @@ body[data-theme="dark"] .header:not([data-open="true"]) .cta {
 .subWrap {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.6s var(--ease-expo-out);
+  transition: grid-template-rows 0.55s var(--ease-expo-out);
 }
 
 .subWrap[data-open="true"] { grid-template-rows: 1fr; }
 .subWrap > * { overflow: hidden; }
 
-.subList { padding-bottom: var(--clamp-14); }
+.subList { padding: 0 var(--clamp-16) var(--clamp-12); }
 
 .subLink {
   display: flex;
   align-items: center;
-  gap: var(--clamp-14);
-  padding: var(--clamp-6) 0 var(--clamp-6) var(--clamp-40);
-  font-size: var(--clamp-18);
+  gap: var(--clamp-12);
+  padding: var(--clamp-6) 0 var(--clamp-6) var(--clamp-90);
+  font-size: var(--clamp-16);
   color: var(--grey-800);
   transition: color 0.3s var(--ease-power2-out);
 }
@@ -306,20 +337,69 @@ body[data-theme="dark"] .header:not([data-open="true"]) .cta {
 
 .subLink:hover .subArrow { opacity: 1; transform: none; }
 
-.panelFoot {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--clamp-24);
-  padding-top: var(--clamp-20);
-  border-top: 1px dashed var(--grey-500);
-  font-family: var(--font-mono);
-  font-size: var(--clamp-11);
-  text-transform: uppercase;
-  color: var(--grey-800);
+/* ---------- red foot ---------- */
+.panelCta {
+  display: grid;
+  grid-template-columns: var(--clamp-90) 1fr var(--clamp-90);
+  align-items: center;
+  min-height: var(--clamp-120);
+  padding-left: var(--clamp-16);
+  background: var(--red-500);
+  color: var(--black);
+  transition: background 0.35s var(--ease-power2-out), color 0.35s var(--ease-power2-out);
 }
+
+.panelCta:hover { background: var(--black); color: var(--red-500); }
+
+.panelCtaLabel {
+  align-self: start;
+  padding-top: var(--clamp-20);
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  text-transform: uppercase;
+}
+
+.panelCtaText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--clamp-16);
+}
+
+.panelCtaText em {
+  font-family: var(--font-display);
+  font-size: var(--clamp-24);
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.panelCtaCode {
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  text-transform: uppercase;
+}
+
+.panelCtaIcon {
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  width: 100%;
+  border-left: 1px dashed currentColor;
+}
+
+.panelCtaIcon :global(svg) { width: var(--clamp-36); height: var(--clamp-30); }
 
 /* ---------- mobile ---------- */
 @media (max-width: 699px) {
+  /* full width on small screens — four columns would be a sliver */
+  .panel {
+    width: auto;
+    right: var(--grid-margin);
+    padding-top: calc(var(--clamp-70) + var(--clamp-40));
+  }
+  .menuNum { width: var(--clamp-40); }
   .header { gap: var(--clamp-10); }
 
   .card {
@@ -340,6 +420,4 @@ body[data-theme="dark"] .header:not([data-open="true"]) .cta {
   .burger { width: var(--clamp-56); }
   .notch { display: none; }
 
-  .panelInner { padding-top: calc(var(--clamp-70) + var(--clamp-40)); }
-  .panelFoot { gap: var(--clamp-12); font-size: var(--clamp-10); }
 }

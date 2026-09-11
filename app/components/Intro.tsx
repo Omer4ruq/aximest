@@ -69,7 +69,6 @@ export default function Intro() {
 
         <Button
           href="/contact"
-          hoverLabel="Say hello"
           icon={<ArrowRight />}
           className={styles.button}
         >

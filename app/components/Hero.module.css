@@ -91,7 +91,7 @@
   padding-inline: var(--grid-margin);
   overflow: hidden;
   max-height: 0.72em;
-  font-size: clamp(64px, 15.6vw, 226px);
+  font-size: max(64px, 15.6vw);
 }
 
 .wordmark {

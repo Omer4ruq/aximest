@@ -17,7 +17,7 @@
 .text {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(34px, 5.4vw, 78px);
+  font-size: max(34px, 5.4vw);
   line-height: 1.0;
   letter-spacing: -0.038em;
   text-wrap: pretty;

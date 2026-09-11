@@ -95,7 +95,6 @@ export default function CtaSection() {
           <span data-reveal style={{ ["--stagger" as string]: "0.08s" }}>
             <Button
               href="/contact"
-              hoverLabel="Start a project"
               icon={<ArrowRight />}
               className={styles.button}
             >

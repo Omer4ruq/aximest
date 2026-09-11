@@ -6,6 +6,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
+import PageTransition from "./components/PageTransition";
 import Cursor from "./components/Cursor";
 import { site } from "./lib/site";
 
@@ -38,6 +39,7 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body>
         <SmoothScroll />
+        <PageTransition />
         <Cursor />
         <Header />
         <main>{children}</main>

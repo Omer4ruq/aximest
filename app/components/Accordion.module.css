@@ -1,7 +1,68 @@
 .list { width: 100%; }
 
-.row { border-top: var(--border); }
+.row { position: relative; }
+
+/* the rule wipes in left to right ahead of the row */
+.row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  border-top: var(--border);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.6s var(--ease-power3-out);
+  transition-delay: calc(var(--index, 0) * 0.1s);
+}
+
 .row:last-child { border-bottom: var(--border); }
+
+.list:global(.is-inview) .row::before { clip-path: inset(0); }
+
+/* number and name rise out of a mask; kind and the plus follow */
+.mask {
+  display: block;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.mask > span {
+  display: block;
+  opacity: 0;
+  transform: translateY(100%);
+  transition:
+    opacity 0.6s var(--ease-power2-out),
+    transform 0.6s var(--ease-power2-out);
+  transition-delay: calc(var(--index, 0) * 0.1s);
+}
+
+.list:global(.is-inview) .mask > span {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.kind {
+  opacity: 0;
+  transform: translateY(100%);
+  transition:
+    opacity 0.6s var(--ease-power2-out),
+    transform 0.6s var(--ease-power2-out);
+  transition-delay: calc(var(--index, 0) * 0.1s + 0.3s);
+}
+
+.list:global(.is-inview) .kind { opacity: 0.7; transform: translateY(0); }
+
+.plus {
+  opacity: 0;
+  transform: translateY(1em);
+  transition:
+    opacity 0.6s var(--ease-power2-out),
+    transform 0.6s var(--ease-power2-out);
+  transition-delay: calc(var(--index, 0) * 0.1s + 0.4s);
+}
+
+.list:global(.is-inview) .plus { opacity: 1; transform: translateY(0); }
 
 .head {
   display: grid;
@@ -21,7 +82,7 @@
 .num {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(22px, 2.4vw, 34px);
+  font-size: max(22px, 2.4vw);
   line-height: 1;
   letter-spacing: -0.03em;
 }
@@ -29,7 +90,7 @@
 .name {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(22px, 2.6vw, 38px);
+  font-size: max(22px, 2.6vw);
   line-height: 1;
   letter-spacing: -0.032em;
 }
@@ -37,7 +98,6 @@
 .kind {
   font-size: var(--clamp-16);
   line-height: 1;
-  opacity: 0.7;
   white-space: nowrap;
 }
 
@@ -46,6 +106,13 @@
   width: var(--clamp-24);
   height: var(--clamp-24);
   justify-self: end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row::before,
+  .mask > span,
+  .kind,
+  .plus { transition: none; }
 }
 
 .plus i {
@@ -75,7 +142,7 @@
   max-width: 62ch;
   margin: 0;
   padding: 0 0 var(--clamp-24) calc(var(--clamp-90) + var(--grid-gutter));
-  font-size: clamp(16px, 1.25vw, 18px);
+  font-size: max(16px, 1.25vw);
   line-height: 1.38;
   opacity: 0.78;
 }

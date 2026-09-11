@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import PageHero from "../components/PageHero";
 import Media from "../components/Media";
+import ScrambleText from "../components/Scramble";
+import { useInView } from "../hooks/useInView";
 import { ArrowRight } from "../components/Icons";
 import { articles, site } from "../lib/site";
 import styles from "./articles.module.css";
@@ -12,6 +14,7 @@ const PER_PAGE = 4;
 export default function ArticlesView() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
+  const grid = useInView<HTMLUListElement>();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -85,16 +88,24 @@ export default function ArticlesView() {
           </div>
         </div>
 
-        <ul className={styles.grid}>
+        <ul className={styles.grid} ref={grid}>
           {visible.map((article, i) => (
             <li key={article.id} className={styles.card}>
               <div className={styles.cardHead}>
-                <span>{article.id}</span>
-                <span>{article.date}</span>
+                <ScrambleText delay={(i % 4) * 0.1}>{article.id}</ScrambleText>
+                <ScrambleText delay={(i % 4) * 0.1 + 0.05}>
+                  {article.date}
+                </ScrambleText>
               </div>
 
               <div className={styles.cardBody}>
-                <p className={styles.tags}>{article.tags.join(", ")}</p>
+                <ScrambleText
+                  as="p"
+                  className={styles.tags}
+                  delay={(i % 4) * 0.1 + 0.1}
+                >
+                  {article.tags.join(", ")}
+                </ScrambleText>
                 <h3 className={styles.title}>{article.title}</h3>
                 <figure className={styles.thumb}>
                   <Media seed={i} />

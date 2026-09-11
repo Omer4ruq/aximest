@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import type { ComponentProps, ReactNode } from "react";
+import { useCallback, useRef, type ComponentProps, type ReactNode } from "react";
+import { scramble } from "./Scramble";
 import styles from "./Button.module.css";
 
 type Color = "default" | "black" | "grey" | "red" | "red-outline";
@@ -9,8 +10,6 @@ type Variant = "default" | "icon" | "link" | "link-blink";
 
 type BaseProps = {
   children: ReactNode;
-  /** Second label revealed on hover — the label rolls up and this rolls in. */
-  hoverLabel?: string;
   color?: Color;
   variant?: Variant;
   inverted?: boolean;
@@ -31,30 +30,30 @@ type ButtonAsButton = BaseProps & { href?: undefined } & Omit<
 
 export type ButtonProps = ButtonAsLink | ButtonAsButton;
 
-function Label({ children, hoverLabel }: { children: ReactNode; hoverLabel?: string }) {
-  if (!hoverLabel) {
-    return <span className={styles.label}>{children}</span>;
-  }
-  return (
-    <span className={styles.swap}>
-      <span className={styles.swapInner}>
-        <em className={styles.swapItem}>{children}</em>
-        <em className={styles.swapItem} aria-hidden="true">
-          {hoverLabel}
-        </em>
-      </span>
-      {/* reserves the widest width so the button never resizes on hover */}
-      <em className={styles.ghost} aria-hidden="true">
-        {hoverLabel}
-      </em>
-    </span>
-  );
+/** The label shuffles through glyphs on hover, as the reference does. */
+function useHoverScramble(text: string) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const cancel = useRef<(() => void) | null>(null);
+
+  const onEnter = useCallback(() => {
+    const el = ref.current;
+    if (!el || !text) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    cancel.current?.();
+    cancel.current = scramble(el, text);
+  }, [text]);
+
+  const onLeave = useCallback(() => {
+    cancel.current?.();
+    cancel.current = null;
+  }, []);
+
+  return { ref, onEnter, onLeave };
 }
 
 export default function Button(props: ButtonProps) {
   const {
     children,
-    hoverLabel,
     color = "default",
     variant = "default",
     inverted = false,
@@ -74,9 +73,18 @@ export default function Button(props: ButtonProps) {
     .filter(Boolean)
     .join(" ");
 
+  const label = typeof children === "string" ? children : "";
+  const { ref: labelRef, onEnter, onLeave } = useHoverScramble(label);
+
   const inner = (
     <>
-      <Label hoverLabel={hoverLabel}>{children}</Label>
+      {label ? (
+        <span className={styles.label} ref={labelRef}>
+          {label}
+        </span>
+      ) : (
+        <span className={styles.label}>{children}</span>
+      )}
       {icon ? <span className={styles.icon}>{icon}</span> : null}
     </>
   );
@@ -86,6 +94,9 @@ export default function Button(props: ButtonProps) {
     "data-color": color,
     "data-variant": variant,
     "data-icon-placement": iconPlacement,
+    onPointerEnter: onEnter,
+    onPointerLeave: onLeave,
+    ...(label ? { "aria-label": label } : {}),
   };
 
   if ("href" in props && props.href) {

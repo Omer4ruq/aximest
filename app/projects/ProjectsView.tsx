@@ -17,7 +17,7 @@ export default function ProjectsView() {
 
   return (
     <>
-      <PageTheme theme="dark" />
+      <PageTheme base="dark" />
 
       <PageHero
         title="Projects"

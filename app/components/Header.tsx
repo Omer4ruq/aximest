@@ -86,85 +86,100 @@ export default function Header() {
       <Button
         href="/contact"
         color={isHome ? "black" : "default"}
-        hoverLabel="Contact us"
         icon={<ArrowRight />}
         className={styles.cta}
       >
         Let&apos;s Talk
       </Button>
 
-      {/* Full-screen navigation */}
+      {/* Backdrop: the page behind blurs rather than being covered */}
+      <button
+        type="button"
+        className={styles.overlay}
+        data-open={open}
+        tabIndex={-1}
+        aria-hidden="true"
+        onClick={() => setOpen(false)}
+      />
+
+      {/* Navigation panel: four grid columns, anchored under the card */}
       <div className={styles.panel} data-open={open} aria-hidden={!open}>
-        <div className={styles.panelInner}>
-          <ul className={styles.menuList}>
-            {nav.map((item, i) => (
-              <li
-                key={item.label}
-                className={styles.menuItem}
-                style={{ ["--i" as string]: String(i) }}
-              >
-                <div className={styles.menuRow}>
-                  <span className={styles.menuNum}>{item.n}</span>
-                  <Link
-                    href={item.href}
-                    className={styles.menuLink}
-                    onClick={() => setOpen(false)}
-                  >
-                    <RollText stagger={0.014}>{item.label}</RollText>
-                  </Link>
-                  {item.children ? (
-                    <button
-                      type="button"
-                      className={styles.menuToggle}
-                      data-open={openGroup === item.label}
-                      onClick={() =>
-                        setOpenGroup((g) => (g === item.label ? null : item.label))
-                      }
-                      aria-label={`Toggle ${item.label} submenu`}
-                    >
-                      <span />
-                      <span />
-                    </button>
-                  ) : null}
-                </div>
-
+        <ol className={styles.menuList}>
+          {nav.map((item, i) => (
+            <li
+              key={item.label}
+              className={styles.menuItem}
+              style={{ ["--i" as string]: String(i) }}
+            >
+              <div className={styles.menuRow}>
+                <span className={styles.menuNum}>{item.n}</span>
+                <Link
+                  href={item.href}
+                  className={styles.menuLink}
+                  onClick={() => setOpen(false)}
+                >
+                  <RollText stagger={0.014}>{item.label}</RollText>
+                </Link>
                 {item.children ? (
-                  <div className={styles.subWrap} data-open={openGroup === item.label}>
-                    <ul className={styles.subList}>
-                      {item.children.map((child, ci) => (
-                        <li key={child.id}>
-                          <Link
-                            href={child.slug}
-                            className={styles.subLink}
-                            onClick={() => setOpen(false)}
-                          >
-                            <span className={styles.subNum}>
-                              S{String(ci + 1).padStart(2, "0")}
-                            </span>
-                            <RollText stagger={0.012}>{child.title}</RollText>
-                            <span className={styles.subArrow}>
-                              <ArrowUpRight />
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <button
+                    type="button"
+                    className={styles.menuToggle}
+                    data-open={openGroup === item.label}
+                    onClick={() =>
+                      setOpenGroup((g) => (g === item.label ? null : item.label))
+                    }
+                    aria-label={`Toggle ${item.label} submenu`}
+                  >
+                    <span />
+                    <span />
+                  </button>
                 ) : null}
-              </li>
-            ))}
-          </ul>
+              </div>
 
-          <div className={styles.panelFoot}>
-            <span>{site.city}</span>
-            <span>
-              {site.code} {site.codeLabel}
+              {item.children ? (
+                <div className={styles.subWrap} data-open={openGroup === item.label}>
+                  <ul className={styles.subList}>
+                    {item.children.map((child, ci) => (
+                      <li key={child.id}>
+                        <Link
+                          href={child.slug}
+                          className={styles.subLink}
+                          onClick={() => setOpen(false)}
+                        >
+                          <span className={styles.subNum}>
+                            S{String(ci + 1).padStart(2, "0")}
+                          </span>
+                          <RollText stagger={0.012}>{child.title}</RollText>
+                          <span className={styles.subArrow}>
+                            <ArrowUpRight />
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </li>
+          ))}
+        </ol>
+
+        {/* Red call-to-action filling the foot of the panel */}
+        <Link
+          href="/contact"
+          className={styles.panelCta}
+          onClick={() => setOpen(false)}
+        >
+          <span className={styles.panelCtaLabel}>Contact us</span>
+          <span className={styles.panelCtaText}>
+            <em>Let&apos;s talk</em>
+            <span className={styles.panelCtaCode}>
+              / {site.contactCode}
             </span>
-            <a href={`tel:${site.phone.replace(/\D/g, "")}`}>
-              <RollText>{site.phone}</RollText>
-            </a>
-          </div>
-        </div>
+          </span>
+          <span className={styles.panelCtaIcon}>
+            <ArrowRight />
+          </span>
+        </Link>
       </div>
     </header>
   );

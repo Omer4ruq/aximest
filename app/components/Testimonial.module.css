@@ -35,7 +35,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(28px, 5.3vw, 76px);
+  font-size: max(28px, 5.3vw);
   line-height: 1.0;
   letter-spacing: -0.04em;
   text-wrap: pretty;

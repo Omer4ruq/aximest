@@ -21,20 +21,10 @@
 .title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(34px, 4.2vw, 60px);
+  font-size: max(34px, 4.2vw);
   line-height: 1;
   letter-spacing: -0.035em;
 }
-
-.mask { display: block; overflow: hidden; padding-bottom: 0.06em; }
-
-.mask > span {
-  display: inline-block;
-  transform: translateY(105%);
-  transition: transform 1.05s var(--ease-expo-out) 0.08s;
-}
-
-.hero[data-ready="true"] .mask > span { transform: translateY(0); }
 
 .aside { display: flex; align-items: center; gap: var(--clamp-12); }
 
@@ -59,20 +49,10 @@
 .statement {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(26px, 3.4vw, 50px);
+  font-size: max(26px, 3.4vw);
   line-height: 1.06;
   letter-spacing: -0.032em;
 }
-
-.word { display: inline-block; overflow: hidden; vertical-align: top; }
-
-.word > span {
-  display: inline-block;
-  transform: translateY(105%);
-  transition: transform 1s var(--ease-expo-out) var(--d, 0s);
-}
-
-.hero[data-ready="true"] .word > span { transform: translateY(0); }
 
 .note {
   max-width: 42ch;

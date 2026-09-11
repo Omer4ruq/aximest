@@ -59,7 +59,7 @@
   align-self: start;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(26px, 2.6vw, 38px);
+  font-size: max(26px, 2.6vw);
   line-height: 1;
   letter-spacing: -0.032em;
 }
@@ -74,7 +74,7 @@
 }
 
 .body {
-  font-size: clamp(16px, 1.25vw, 18px);
+  font-size: max(16px, 1.25vw);
   line-height: 1.38;
   letter-spacing: -0.008em;
 }
