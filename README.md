@@ -115,7 +115,13 @@ present without JavaScript and stable for screen readers while the glyphs churn;
 `prefers-reduced-motion` skips the effect entirely. The same routine drives the
 hover effect on every button.
 
-**Closing statement.** "We Drive Your Systems Fwrd" is the reference's
+**Closing statement.** Rendered from the root layout, so it closes every route —
+the reference carries the identical block on all of them, `/contact` and the legal
+pages included. It declares no theme of its own, so whatever a page has latched by the
+time you reach the bottom is what it renders on: white on `/`, `/contact` and the
+service pages, white-on-black on `/expertise` and `/projects`. (The reference keeps it
+white everywhere; here it follows the page.) "We Drive Your Systems Fwrd" is the
+reference's
 `c-footer-section-title`: a 12-column subgrid of four masked lines at
 `max(0px, 13.8889vw)` (200px at 1440), `line-height: 80%`,
 `letter-spacing: -0.02em`. Line 1 spreads `We`/`Drive` across the full width,
@@ -123,6 +129,15 @@ line 2 is capped at nine columns, line 4 is right-aligned. Each line starts at
 `translateY(100%)` inside a clip that is open at the sides, then rises on a 0.1s
 stagger; the arrow line additionally slides from `-1em` to `0` a further 0.3s
 later, and the last line's inner span tracks scroll from `-100%` to `0`.
+
+That last travel is measured against the four-line `<h2>`, not the section.
+`0` progress is the block's top at the viewport bottom, `1` is its bottom past the
+viewport top, so the range is `viewport + block height` — and the block has to be the
+same one the reference measures. Ours also carries its vertical padding and the chrome
+strip below it (1200px against the title's 640px), and measuring that stretched the
+travel over so much scroll that the word was still 4px short of the right margin when
+the page ran out of room to scroll. Measured against the title alone, the range matches
+the reference's `c-footer-section-title` to within a few px per sample.
 
 **Button labels.** A button keeps a hidden twin of its label in the same grid
 cell (`opacity: 0; color: transparent`). Without it, the hover scramble empties
@@ -287,6 +302,17 @@ render as a plain grid instead.
 > **`data-reveal` gotcha:** a reveal target inside an `overflow: hidden` mask is clipped
 > out of the viewport, so IntersectionObserver never fires on it. Put
 > `data-reveal="mask"` on the *mask wrapper* and animate the inner span from it.
+
+## Icons
+
+The app icons are built from the `Mark` monogram in
+[Icons.tsx](app/components/Icons.tsx) — the two chevrons and dot, black on the same
+`--red-500` the header menu's footer uses, so the tab matches the identity card.
+[app/icon.svg](app/icon.svg) is the source; `favicon.ico` (16 + 32px frames) and
+`apple-icon.png` (180px) are rasterised from it. Next picks all three up by file
+convention and emits the `<link>` tags itself — see
+`node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/01-metadata/app-icons.md`.
+To restyle, edit `icon.svg` and re-render the two rasters from it.
 
 ## Swapping in real assets
 

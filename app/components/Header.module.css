@@ -321,7 +321,12 @@ body[data-theme="dark"] .header:not([data-open="true"]) .cta {
 .subWrap[data-open="true"] { grid-template-rows: 1fr; }
 .subWrap > * { overflow: hidden; }
 
-.subList { padding: 0 var(--clamp-16) var(--clamp-12); }
+/* `0fr` zeroes the row's content box, but padding still counts toward the grid
+   item's outer height — a bottom padding here left the closed panel 12px tall
+   with the first link showing through it. The horizontal padding is harmless;
+   the bottom one moves onto the last row instead. */
+.subList { padding: 0 var(--clamp-16); }
+.subList > li:last-child { padding-bottom: var(--clamp-12); }
 
 .subLink {
   display: flex;

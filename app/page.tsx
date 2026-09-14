@@ -7,7 +7,6 @@ import PageTheme, { ThemeZone } from "./components/PageTheme";
 import styles from "./page.module.css";
 import Pillars from "./components/Pillars";
 import Testimonial from "./components/Testimonial";
-import CtaSection from "./components/CtaSection";
 
 export default function Home() {
   return (
@@ -30,7 +29,6 @@ export default function Home() {
       <ThemeZone theme="light" className={styles.climb}>
         <Pillars />
         <Testimonial />
-        <CtaSection />
       </ThemeZone>
     </>
   );

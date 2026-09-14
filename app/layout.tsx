@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
 import Header from "./components/Header";
+import CtaSection from "./components/CtaSection";
 import Footer from "./components/Footer";
 import SmoothScroll from "./components/SmoothScroll";
 import PageTransition from "./components/PageTransition";
@@ -42,7 +43,13 @@ export default function RootLayout({
         <PageTransition />
         <Cursor />
         <Header />
-        <main>{children}</main>
+        <main>
+          {children}
+          {/* Closes every route. It takes no theme of its own: whatever the
+              page has latched by the time you reach it is what the statement
+              renders on, so a dark page stays dark all the way down. */}
+          <CtaSection />
+        </main>
         <Footer />
       </body>
     </html>

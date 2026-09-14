@@ -13,6 +13,7 @@ import styles from "./CtaSection.module.css";
  */
 export default function CtaSection() {
   const ref = useRef<HTMLElement>(null);
+  const title = useRef<HTMLHeadingElement>(null);
   const drift = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -38,8 +39,15 @@ export default function CtaSection() {
     let frame = 0;
     const update = () => {
       const node = drift.current;
-      if (!node) return;
-      const rect = el.getBoundingClientRect();
+      const block = title.current;
+      if (!node || !block) return;
+      // Measured against the four lines, not the section. The section also
+      // carries its vertical padding and the chrome strip — nearly twice the
+      // height — which stretched the travel over so much scroll that the word
+      // was still short of the right margin when the page ran out of room.
+      // The title block alone is the same height as the reference's, so the
+      // word now covers the same ground at the same point on screen.
+      const rect = block.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       // 0 as the block enters from the bottom, 1 once it has cleared the top
       const progress = Math.max(
@@ -69,7 +77,7 @@ export default function CtaSection() {
   return (
     <section className={styles.section} ref={ref} id="contact-cta">
       <div className={styles.grid}>
-        <h2 className={styles.title}>
+        <h2 className={styles.title} ref={title}>
           <span className="sr-only">We Drive Your Systems Fwrd</span>
 
           <span className={`${styles.line} ${styles.line1}`} aria-hidden="true">

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Aximest monogram: the two chevrons and dot from Icons.tsx `Mark`,
+       on the red the header menu's footer already uses. -->
+  <rect width="64" height="64" rx="12" fill="#de5849"/>
+  <g transform="translate(12 15.33) scale(0.8333)" fill="#000">
+    <path d="M0 40 14.5 0h8.2L8.2 40H0Z"/>
+    <path d="M17.6 40 32.1 0h8.2L25.8 40h-8.2Z"/>
+    <path d="M33.4 22.6h13.9L44.6 30H30.7l2.7-7.4Z"/>
+    <circle cx="44" cy="36.5" r="3.2"/>
+  </g>
+</svg>
