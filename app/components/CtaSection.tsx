@@ -3,104 +3,121 @@
 import { useEffect, useRef } from "react";
 import Button from "./Button";
 import Media from "./Media";
-import { ArrowRight, ArrowRightLong } from "./Icons";
-import { useRevealGroup } from "../hooks/useReveal";
+import { ArrowRight } from "./Icons";
 import styles from "./CtaSection.module.css";
 
 /**
- * Closing statement. Four oversized lines sit on the grid at different
- * offsets and drift horizontally as the section scrolls past.
+ * Closing statement. Four masked lines rise in sequence when the block
+ * reaches the viewport; the arrow line then slides in from the left, and the
+ * last line tracks scroll horizontally.
  */
 export default function CtaSection() {
-  const reveal = useRevealGroup<HTMLElement>();
-  const lines = useRef<(HTMLSpanElement | null)[]>([]);
+  const ref = useRef<HTMLElement>(null);
+  const drift = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const section = reveal.current;
-    if (!section) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const el = ref.current;
+    if (!el) return;
 
-    const drift = [-2.5, 3, -1.6, 2.2];
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.classList.add("is-inview");
+      return;
+    }
+
+    // Lines rise once the block is three-quarters of the way up the viewport.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        el.classList.add("is-inview");
+        io.disconnect();
+      },
+      { rootMargin: "0px 0px -25% 0px" },
+    );
+    io.observe(el);
+
     let frame = 0;
-
     const update = () => {
-      const rect = section.getBoundingClientRect();
+      const node = drift.current;
+      if (!node) return;
+      const rect = el.getBoundingClientRect();
       const vh = window.innerHeight || 1;
-      const p = Math.max(
-        -1,
-        Math.min(1, 1 - (rect.top + rect.height / 2) / (vh / 2 + rect.height / 2)),
+      // 0 as the block enters from the bottom, 1 once it has cleared the top
+      const progress = Math.max(
+        0,
+        Math.min(1, (vh - rect.top) / (vh + rect.height)),
       );
-      lines.current.forEach((el, i) => {
-        if (el) el.style.transform = `translate3d(${p * drift[i]}vw, 0, 0)`;
-      });
+      node.style.transform = `translate3d(${-100 * (1 - progress)}%, 0, 0)`;
+      frame = 0;
     };
-
     const onScroll = () => {
-      cancelAnimationFrame(frame);
+      if (frame) return;
       frame = requestAnimationFrame(update);
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     update();
+
     return () => {
+      io.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      cancelAnimationFrame(frame);
+      if (frame) cancelAnimationFrame(frame);
     };
-  }, [reveal]);
-
-  const line = (i: number, className: string, children: React.ReactNode) => (
-    <span
-      className={`${styles.line} ${className}`}
-      ref={(el) => {
-        lines.current[i] = el;
-      }}
-      aria-hidden="true"
-    >
-      <span
-        className={styles.mask}
-        data-reveal="mask"
-        style={{ ["--stagger" as string]: `${i * 0.07}s` }}
-      >
-        <span>{children}</span>
-      </span>
-    </span>
-  );
+  }, []);
 
   return (
-    <section className={styles.section} ref={reveal} id="contact-cta">
+    <section className={styles.section} ref={ref} id="contact-cta">
       <div className={styles.grid}>
         <h2 className={styles.title}>
           <span className="sr-only">We Drive Your Systems Fwrd</span>
-          {line(0, styles.l1, <><span className={styles.left}>We</span><span className={styles.right}>Drive</span></>)}
-          {line(
-            1,
-            styles.l2,
-            <>
-              <i className={styles.arrow}>
-                <ArrowRightLong />
-              </i>
-              Your
-            </>,
-          )}
-          {line(2, styles.l3, "Systems")}
-          {line(3, styles.l4, "Fwrd")}
+
+          <span className={`${styles.line} ${styles.line1}`} aria-hidden="true">
+            <span className={styles.inner} style={{ ["--i" as string]: "0" }}>
+              <span className={styles.shift}>
+                <span>We</span>
+                <span>Drive</span>
+              </span>
+            </span>
+          </span>
+
+          <span className={`${styles.line} ${styles.line2}`} aria-hidden="true">
+            <span className={styles.inner} style={{ ["--i" as string]: "1" }}>
+              <span className={`${styles.shift} ${styles.shiftArrow}`}>
+                <i className={styles.icon}>
+                  <ArrowRight />
+                </i>
+                <span>Your</span>
+              </span>
+            </span>
+          </span>
+
+          <span className={`${styles.line} ${styles.line3}`} aria-hidden="true">
+            <span className={styles.inner} style={{ ["--i" as string]: "2" }}>
+              <span className={styles.shift}>
+                <span>Systems</span>
+              </span>
+            </span>
+          </span>
+
+          <span className={`${styles.line} ${styles.line4}`} aria-hidden="true">
+            <span className={styles.inner} style={{ ["--i" as string]: "3" }}>
+              <span className={styles.shift}>
+                <span ref={drift} className={styles.drift}>
+                  Fwrd
+                </span>
+              </span>
+            </span>
+          </span>
         </h2>
 
-        <div className={styles.aside}>
-          <p className={styles.sub} data-reveal>
+        <div className={styles.content}>
+          <p className={styles.description}>
             Digital architectures for an ever-shifting world.
           </p>
-          <span data-reveal style={{ ["--stagger" as string]: "0.08s" }}>
-            <Button
-              href="/contact"
-              icon={<ArrowRight />}
-              className={styles.button}
-            >
-              Let&apos;s talk
-            </Button>
-          </span>
+          <Button href="/contact" icon={<ArrowRight />} className={styles.cta}>
+            Let&apos;s talk
+          </Button>
         </div>
       </div>
 

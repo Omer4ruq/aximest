@@ -83,8 +83,10 @@
   display: inline-block;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: max(30px, 3.6vw);
-  line-height: 1.02;
+  /* 32px at 1440: the 4em collapsed band is 16 + 32 + 16, so the title
+     keeps its bottom padding when the cards stack. */
+  font-size: max(32px, 2.2222vw);
+  line-height: 1;
   letter-spacing: -0.035em;
   opacity: 0;
   transform: translateY(105%);
@@ -119,8 +121,9 @@
 
 .media {
   grid-area: 1 / 10 / 3 / 13;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--grey-100);
   border-radius: var(--clamp-4);
   overflow: hidden;
@@ -130,11 +133,11 @@
 .card:hover .media { background: var(--grey-200); }
 
 .glyph {
-  width: 42%;
-  max-width: 180px;
-  aspect-ratio: 1;
+  width: 100%;
+  aspect-ratio: 2;
   color: var(--black);
-  transition: transform 0.7s var(--ease-power3-out);
+  /* the reference plays a Lottie here, multiplied over the panel */
+  mix-blend-mode: multiply;
 }
 
 .card:hover .glyph { transform: scale(1.06) rotate(-4deg); }

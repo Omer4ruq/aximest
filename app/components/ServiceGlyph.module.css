@@ -1,0 +1,93 @@
+/* Every mark loops continuously, standing in for the reference's Lottie. */
+.driftA,
+.driftB,
+.march,
+.wave,
+.breathe,
+.orbit,
+.spinSlow,
+.spinFast,
+.corePulse,
+.pulseHole {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.driftA { animation: drift-left 4.8s var(--ease-power2-out) infinite alternate; }
+.driftB { animation: drift-right 4.8s var(--ease-power2-out) infinite alternate; }
+
+@keyframes drift-left {
+  from { transform: translateX(10px); }
+  to { transform: translateX(-16px); }
+}
+@keyframes drift-right {
+  from { transform: translateX(-10px); }
+  to { transform: translateX(16px); }
+}
+
+.pulseHole {
+  fill: var(--card-bg-color, #f0f1f4);
+  animation: hole 4.8s var(--ease-power2-out) infinite alternate;
+}
+
+@keyframes hole {
+  from { transform: scale(1.25); }
+  to { transform: scale(0.55); }
+}
+
+/* chevrons march one full slot, then the loop restarts seamlessly */
+.march { animation: march 2.6s linear infinite; }
+
+@keyframes march {
+  from { transform: translateX(-46px); }
+  to { transform: translateX(0); }
+}
+
+.wave {
+  animation: wave 2.2s var(--ease-power2-out) infinite alternate;
+  animation-delay: calc(var(--i) * 0.12s);
+}
+
+@keyframes wave {
+  from { transform: scaleY(0.45) skewX(0deg); }
+  to { transform: scaleY(1) skewX(-14deg); }
+}
+
+.breathe {
+  animation: breathe 3.2s var(--ease-power2-out) infinite alternate;
+  animation-delay: calc(var(--i) * 0.25s);
+}
+
+@keyframes breathe {
+  from { transform: scale(0.82); }
+  to { transform: scale(1); }
+}
+
+.orbit { animation: orbit 5s linear infinite; }
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(6px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(6px) rotate(-360deg); }
+}
+
+.spinSlow { animation: spin 9s linear infinite; }
+.spinFast { animation: spin 3.4s linear infinite reverse; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.corePulse { animation: core 2.4s var(--ease-power2-out) infinite alternate; }
+
+@keyframes core {
+  from { transform: scale(0.6); }
+  to { transform: scale(1.25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driftA, .driftB, .march, .wave, .breathe,
+  .orbit, .spinSlow, .spinFast, .corePulse, .pulseHole {
+    animation: none;
+  }
+}

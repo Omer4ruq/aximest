@@ -1,0 +1,164 @@
+/* ============================================================
+   Hero reveal
+   Pulled up under the red hero and two folds tall, so the chrome mark
+   stays pinned behind while the labels and then the opening statement
+   scroll across it.
+   ============================================================ */
+.reveal {
+  position: relative;
+  width: 100%;
+  color: var(--black);
+  min-height: 200svh;
+  margin-top: -100svh;
+  padding-top: 200svh;
+  padding-bottom: var(--clamp-30);
+  background:
+    radial-gradient(120% 90% at 50% 25%, #f4f4f5 0%, #d6d7da 45%, #b9babe 100%);
+}
+
+/* ---------- pinned mark ---------- */
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+}
+
+.mediaWrapper {
+  position: sticky;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.mark {
+  --p: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: max(220px, 45.8vw);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+
+  background: linear-gradient(
+    172deg,
+    #ffffff 0%,
+    #c9cacd 14%,
+    #8e9095 26%,
+    #ffffff 38%,
+    #e6e7ea 48%,
+    #74767c 58%,
+    #b9d0e6 66%,
+    #ffffff 74%,
+    #9a9ca1 86%,
+    #dfe0e3 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  filter: drop-shadow(0 26px 44px rgba(0, 0, 0, 0.22));
+  transform:
+    rotateX(calc(var(--p) * 14deg))
+    rotateZ(calc(var(--p) * -7deg))
+    scale(calc(1 + var(--p) * 0.06));
+  will-change: transform;
+}
+
+/* ---------- pinned labels ---------- */
+.grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200svh;
+  pointer-events: none;
+}
+
+.gridWrapper {
+  position: sticky;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100svh;
+}
+
+.labels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--grid-gutter);
+  width: 100%;
+  padding: var(--header-bar-height) var(--grid-margin);
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--black);
+}
+
+.stack { line-height: 1.25; }
+
+/* ---------- statement ---------- */
+.content {
+  position: relative;
+  padding-inline: var(--grid-margin);
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--clamp-8);
+  width: 100%;
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  column-gap: var(--grid-gutter);
+  padding-left: calc(var(--grid-step) * 2 - var(--grid-gutter));
+  font-family: var(--font-mono);
+  font-size: var(--clamp-12);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.text { width: 100%; }
+
+.fadeText {
+  margin: 0;
+  text-indent: calc(var(--grid-step) * 2 - var(--grid-gutter));
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: max(34px, 5.42vw);
+  line-height: 1;
+  letter-spacing: -0.038em;
+  text-wrap: pretty;
+}
+
+.fadeText span { transition: color 0.18s linear; }
+
+.link {
+  margin-top: var(--clamp-20);
+  text-align: right;
+}
+
+@media (max-width: 899px) {
+  .reveal { min-height: 160svh; padding-top: 160svh; }
+  .grid { height: 160svh; }
+  .labels { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--clamp-10); }
+  .label { padding-left: 0; }
+  .fadeText { text-indent: 0; }
+  .link { text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark { transform: none; }
+}

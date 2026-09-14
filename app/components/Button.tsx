@@ -79,8 +79,13 @@ export default function Button(props: ButtonProps) {
   const inner = (
     <>
       {label ? (
-        <span className={styles.label} ref={labelRef}>
-          {label}
+        // The hidden twin holds the label's full width so the button does not
+        // resize while the visible one is mid-scramble.
+        <span className={styles.label}>
+          <em className={styles.ghost} aria-hidden="true">
+            {label}
+          </em>
+          <em ref={labelRef}>{label}</em>
         </span>
       ) : (
         <span className={styles.label}>{children}</span>

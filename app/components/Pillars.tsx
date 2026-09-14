@@ -36,7 +36,7 @@ export default function Pillars() {
       data-inview={inView}
     >
       <div className={styles.nav}>
-        <div className={styles.navList} role="tablist" aria-label="What defines us">
+        <div className={styles.navList} role="tablist" aria-label="What defines">
           {pillars.map((pillar, i) => (
             <Button
               key={pillar.key}
@@ -98,6 +98,10 @@ export default function Pillars() {
                 </li>
               ))}
             </ol>
+
+            <span className={styles.panelIndex} aria-hidden="true">
+              <em>{i + 1}</em>
+            </span>
           </div>
         ))}
       </div>

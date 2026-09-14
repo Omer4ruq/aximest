@@ -82,3 +82,67 @@ export function useColumnParallax<T extends HTMLElement = HTMLElement>() {
 
   return ref;
 }
+
+/**
+ * Scroll parallax matching the reference: the element travels from
+ * `-speed * 100%` to `+speed * 100%` as its trigger crosses the viewport, and
+ * `--parallax-scale` is sized so the artwork still covers at the extremes.
+ */
+export function useParallax<T extends HTMLElement = HTMLElement>(speed = 0.15) {
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const coarse =
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0) &&
+      window.innerWidth < 1024;
+    if (coarse) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const trigger = el.parentElement ?? el;
+    let frame = 0;
+
+    const setScale = () => {
+      const scale =
+        1 + Math.abs(window.innerHeight * speed * 2) / (el.offsetHeight || 1);
+      el.style.setProperty("--parallax-scale", String(scale));
+    };
+
+    const update = () => {
+      const rect = trigger.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const progress = Math.max(
+        0,
+        Math.min(1, (vh - rect.top) / (vh + rect.height)),
+      );
+      const percent = -speed * 100 + progress * speed * 200;
+      el.style.transform = `translate3d(0, ${percent.toFixed(3)}%, 0)`;
+      frame = 0;
+    };
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(update);
+    };
+
+    const onResize = () => {
+      setScale();
+      onScroll();
+    };
+
+    setScale();
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [speed]);
+
+  return ref;
+}

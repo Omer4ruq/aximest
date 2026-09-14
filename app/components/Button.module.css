@@ -159,4 +159,20 @@
   flex-shrink: 0;
 }
 
-.label { display: inline-block; }
+.label {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.label > em {
+  grid-area: 1 / 1 / 2 / 2;
+  font-style: normal;
+}
+
+.ghost {
+  z-index: -1;
+  opacity: 0;
+  color: transparent;
+  pointer-events: none;
+}

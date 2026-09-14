@@ -2,9 +2,11 @@
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 100;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--clamp-24);
+  /* the bar sits on the page grid: card 1-4, statement 7-9, CTA 10-12 */
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  align-items: start;
   padding: var(--grid-margin);
   pointer-events: none;
   transition: transform 0.7s var(--ease-power3-out);
@@ -15,6 +17,7 @@
 
 /* ---------- notched identity card ---------- */
 .card {
+  grid-column: 1 / 5;
   position: relative;
   display: flex;
   align-items: stretch;
@@ -30,17 +33,28 @@
 
 .cardMain {
   display: flex;
-  align-items: flex-start;
+  /* stretch so the brand column can pin its strapline to the bottom */
+  align-items: stretch;
   gap: var(--clamp-24);
   padding: var(--clamp-16) var(--clamp-20);
-  min-width: var(--clamp-340);
+  flex: 1;
+  min-width: 0;
   border-right: 1px dashed var(--grey-500);
 }
 
 .brand {
   display: flex;
   align-items: flex-start;
-  gap: var(--clamp-14);
+  flex-shrink: 0;
+}
+
+/* wordmark and strapline share one column, pinned top and bottom */
+.brandCopy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .brandMark {
@@ -57,11 +71,9 @@
   font-size: var(--clamp-11);
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  padding-top: 0.35em;
 }
 
 .brandTag {
-  align-self: flex-end;
   font-family: var(--font-mono);
   font-size: var(--clamp-11);
   line-height: 1.25;
@@ -117,15 +129,16 @@
 .header[data-open="true"] .notch { opacity: 0; }
 
 /* ---------- centred statement ---------- */
+/* columns 7-9, first line indented by one column, as the reference sets it */
 .statement {
-  margin: var(--clamp-14) auto 0;
+  grid-column: 7 / 10;
   font-family: var(--font-display);
   font-size: var(--clamp-24);
   font-weight: 500;
-  line-height: 1.06;
-  letter-spacing: -0.028em;
+  line-height: 103.5%;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
-  text-align: center;
+  text-indent: var(--grid-col);
   color: var(--black);
 }
 
@@ -133,7 +146,7 @@
   .statement { display: none; }
 }
 
-.spacer { flex: 1; }
+.spacer { grid-column: 7 / 10; }
 
 /* With the menu open the panel is light, so the CTA goes back to dark ink. */
 body[data-theme="dark"] .header[data-open="true"] .cta {
@@ -157,9 +170,10 @@ body[data-theme="dark"] .header:not([data-open="true"]) .cta {
 
 /* ---------- CTA ---------- */
 .cta {
-  margin-top: var(--clamp-14);
-  margin-left: auto;
-  min-width: var(--clamp-190);
+  grid-column: 10 / 13;
+  justify-self: end;
+  /* two grid columns wide, matching the reference button */
+  min-width: calc(var(--grid-step) * 2 - var(--grid-gutter));
   --btn-min-height: var(--clamp-32);
 }
 
@@ -226,7 +240,10 @@ body[data-theme="dark"] .header:not([data-open="true"]) .cta {
 
 .menuList {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 
@@ -400,7 +417,9 @@ body[data-theme="dark"] .header:not([data-open="true"]) .cta {
     padding-top: calc(var(--clamp-70) + var(--clamp-40));
   }
   .menuNum { width: var(--clamp-40); }
-  .header { gap: var(--clamp-10); }
+  .header { grid-template-columns: 1fr auto; column-gap: var(--clamp-10); }
+  .card { grid-column: 1; }
+  .cta { grid-column: 2; }
 
   .card {
     flex: 1;

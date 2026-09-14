@@ -1,14 +1,25 @@
 .hero {
-  /* Sits above the pinned ChromeMark section and slides up off it. */
+  /* Sits above the pinned reveal section and slides up off it. */
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  min-height: 100svh;
-  padding: calc(var(--clamp-120) + var(--clamp-140)) 0 0;
+  /* exactly one viewport, like the reference — the blinds absorb the slack */
+  height: 100svh;
+  padding: calc(var(--clamp-120) + var(--clamp-140)) var(--grid-margin)
+    var(--grid-margin);
   background: var(--red-500);
   color: var(--black);
   overflow: hidden;
+}
+
+/* labels / blinds / footer share the space left under the header */
+.grid {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 /* ---- mono meta row ---- */
@@ -16,10 +27,11 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--grid-gutter);
-  padding-inline: var(--grid-margin);
-  margin-bottom: var(--clamp-16);
+  margin-top: auto;
+  padding-bottom: var(--clamp-8);
   font-family: var(--font-mono);
   font-size: var(--clamp-12);
+  line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
@@ -39,59 +51,22 @@
 
 .hero[data-ready="true"] .meta span { opacity: 1; transform: none; }
 
-/* ---- blinds ---- */
-.blinds {
-  display: flex;
-  flex-direction: column;
-  padding-inline: var(--grid-margin);
-
-  /* One design unit = 1vw, frozen above the 1440px design width. */
-  --u: min(1vw, 14.4px);
-  /* Bars sit on a constant pitch; only their height tapers. */
-  --pitch: calc(2.361 * var(--u));
+/* ---- footer: wordmark on nine columns, explore on the last three ---- */
+.footer {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  row-gap: var(--clamp-12);
+  align-items: flex-end;
 }
 
-.blind {
-  display: block;
-  background: var(--black);
-
-  /* Heights taper from 26px at the top of the stack to 12px at the bottom
-     (measured at the 1440px design width). */
-  --height: calc((1.806 - 0.972 * var(--t)) * var(--u));
-  height: var(--height);
-  margin-bottom: calc(var(--pitch) - var(--height));
-
-  /* Each bar runs at full height to --tail, drops over a short diagonal,
-     then continues at 54% height to the right edge. Hero.tsx drives
-     --tail per frame so the stack reads as one wave travelling down the
-     page as you scroll; this declaration is the resting state used before
-     hydration and under reduced motion. */
-  --tail: calc((1 - var(--t) * 0.798) * 100%);
-  --run: 7.8%;
-  clip-path: polygon(
-    0 0,
-    var(--tail) 0,
-    calc(var(--tail) + var(--run)) 46%,
-    100% 46%,
-    100% 100%,
-    0 100%
-  );
-
-  transform-origin: left center;
-  transform: scaleX(0);
-  transition: transform 1.15s var(--ease-expo-out);
-  transition-delay: calc(0.2s + var(--i) * 0.045s);
-}
-
-.hero[data-ready="true"] .blind { transform: scaleX(1); }
-
-/* ---- wordmark ---- */
 .wordmarkWrap {
-  margin-top: auto;
-  padding-inline: var(--grid-margin);
+  grid-column: 1 / 10;
+  /* masks the entry reveal only — the glyphs are never clipped, because the
+     line box below is sized to them exactly */
   overflow: hidden;
-  max-height: 0.72em;
-  font-size: max(64px, 15.6vw);
+  /* ~127px tall at 1440, matching the reference's wordmark box */
+  font-size: max(0px, 12.2vw);
 }
 
 .wordmark {
@@ -99,7 +74,7 @@
   font-family: var(--font-display);
   font-weight: 500;
   font-size: 1em;
-  line-height: 0.78;
+  line-height: 0.72;
   letter-spacing: -0.045em;
   white-space: nowrap;
   transform: translateY(110%);
@@ -114,16 +89,15 @@
   letter-spacing: 0;
 }
 
-.hero[data-ready="true"] .wordmark { transform: translateY(9%); }
+.hero[data-ready="true"] .wordmark { transform: translateY(0); }
 
 /* ---- explore ---- */
 .explore {
-  position: absolute;
-  right: var(--grid-margin);
-  bottom: var(--clamp-20);
+  grid-column: 10 / 13;
   display: flex;
   align-items: center;
-  gap: var(--clamp-40);
+  justify-content: space-between;
+  gap: var(--clamp-16);
   font-family: var(--font-mono);
   font-size: var(--clamp-12);
   text-transform: uppercase;

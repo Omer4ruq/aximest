@@ -1,0 +1,21 @@
+/**
+ * The work helix pins a 100svh stage inside a much taller section. Once the
+ * rotation has finished, the leftover viewport used to scroll past as an empty
+ * black stage before the next section arrived. This pulls the block that
+ * follows up by exactly that leftover viewport (WorkTornado's `CLIMB`) and
+ * lifts it above the sticky stage in paint order, so it climbs over the held
+ * helix instead — and the page is no longer than it was.
+ *
+ * Scoped to the conditions under which the helix actually renders: below
+ * 1024px, and with motion turned down, WorkTornado shows its plain fallback
+ * list and there is nothing to climb over.
+ */
+@media (min-width: 1024px) {
+  @media not (prefers-reduced-motion: reduce) {
+    .climb {
+      position: relative;
+      z-index: 1;
+      margin-top: -100svh;
+    }
+  }
+}

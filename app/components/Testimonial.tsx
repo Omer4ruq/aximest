@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Media from "./Media";
+import { useParallax } from "../hooks/useInView";
 import { testimonial } from "../lib/site";
 import styles from "./Testimonial.module.css";
 
@@ -11,6 +12,7 @@ import styles from "./Testimonial.module.css";
  */
 export default function Testimonial() {
   const ref = useRef<HTMLElement>(null);
+  const bg = useParallax<HTMLDivElement>(0.15);
   const words = testimonial.quote.split(" ");
 
   useEffect(() => {
@@ -56,7 +58,9 @@ export default function Testimonial() {
   return (
     <section className={styles.section} ref={ref}>
       <div className={styles.bg} aria-hidden="true">
-        <Media seed={4} dark />
+        <div className={styles.bgWrapper} ref={bg}>
+          <Media seed={4} dark />
+        </div>
       </div>
 
       <figure className={styles.figure}>

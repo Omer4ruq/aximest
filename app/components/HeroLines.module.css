@@ -1,0 +1,14 @@
+.lines {
+  position: relative;
+  flex: 3;
+  min-height: 0;
+  width: 100%;
+  margin-bottom: var(--clamp-12);
+  color: var(--black);
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

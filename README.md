@@ -40,7 +40,7 @@ column 4, and the right rail (counts, panels, asides) runs from column 10.
 | Masked line/word reveals on scroll | `useRevealGroup` + `data-reveal="mask"` |
 | Per-character roll on link hover | [RollText](app/components/RollText.tsx) |
 | Character scramble on entry and on button hover | [Scramble](app/components/Scramble.tsx) |
-| Scroll-driven blind wave (pointer nudges the phase) | [Hero](app/components/Hero.tsx) |
+| Pointer-driven blind stack on canvas | [HeroLines](app/components/HeroLines.tsx) |
 | Grid page transition between routes | [PageTransition](app/components/PageTransition.tsx) |
 | Scroll-driven word highlight | [Intro](app/components/Intro.tsx), [Testimonial](app/components/Testimonial.tsx) |
 | Stacked sticky service cards | [Services](app/components/Services.tsx) |
@@ -52,17 +52,56 @@ column 4, and the right rail (counts, panels, asides) runs from column 10.
 
 Every scroll effect is disabled under `prefers-reduced-motion: reduce`.
 
-The hero's blind stack is a triangle wave: scroll advances its phase, each bar
-samples it at its own offset, and the diagonal sweeps down the stack. The
-constants in [Hero.tsx](app/components/Hero.tsx) (`SCROLL_SPEED`, `SPREAD`) and the
-bar geometry in `Hero.module.css` were measured off the reference frame by frame.
+The hero's blind stack is drawn on a canvas, as the reference does, and is
+**pointer-driven** rather than scroll-driven. Each of the 14 lines owns a slot of
+the box (`height / 14` minus a gutter of `height * 4.5/390`); within its slot a
+line is full height at the left and steps down to a tail that runs to the right
+edge. The tail is `idleRatio` of the slot, tapering `12/22 -> 6/22` down the
+stack, and the wedge above it adds `interactiveRatio`, tapering `10/22 -> 5/22` —
+so the left edge tapers 1.0 -> 0.5 of the slot, which is the 26px -> 12px
+measured at 1440.
+
+Where each wedge ends is the interaction: the line under the cursor gets offset
+0 (its wedge reaches fully right) and the rest pull left by
+`|hovered - i| / 13 * maxOffset`, with `maxOffset = width * 100/1408 * 13 * 0.8`.
+Offsets lerp at 0.15 per frame, which is what makes it feel liquid. Scrolling
+re-resolves which line is under the cursor, so the stack reacts to scroll too.
+Because the lines are sized from the box rather than in fixed pixels, they stay
+proportional at any viewport — a fixed-px version reads noticeably thinner.
+
+**Hero and reveal.** The hero is exactly `100svh`: a flex column where the grid
+labels take `margin-top: auto`, the 14-bar blind stack takes `flex: 3`, and the
+footer places the wordmark on columns 1-9 (`max(0px, 12.2vw)`, ~127px tall) with
+the explore cue on 10-12. The header bar runs on the same 12-column grid — card
+1-4, statement 7-9 (indented one column), CTA 10-12 at two columns wide.
+
+Below it, the reveal is pulled up `-100svh` and is two folds tall with two folds
+of top padding. The chrome mark is pinned behind it at `z-index: -1` for the
+section's whole length, so the grid labels and then the opening statement scroll
+*across* it rather than sitting in a section of their own — the statement's words
+warm from `#A7A7A7` to full contrast between "top bottom" and "center center".
+
+**Testimonial parallax.** The background wrapper travels from `-speed * 100%` to
+`+speed * 100%` (speed 0.15) as the section crosses the viewport, and the artwork
+carries `scale(var(--parallax-scale))` where the scale is
+`1 + |viewportHeight * speed * 2| / elementHeight` — just enough that it still
+covers at either end of the travel. Skipped on coarse pointers under 1024px, as
+the reference does. Lives in `useParallax` in [useInView](app/hooks/useInView.ts).
+
+**Service glyphs.** The reference plays a looping Lottie in each service panel,
+`aspect-ratio: 2`, full panel width, `mix-blend-mode: multiply`.
+[ServiceGlyph](app/components/ServiceGlyph.tsx) fills the same frame with marks
+that carry their own CSS loops — drifting discs, marching chevrons, a bar wave,
+breathing blocks, counter-rotating rings — all stopped under reduced motion.
 
 **Stacked service cards.** Each `<li>` is `position: sticky; top: 0` *and*
 `transform: translateY(index * 4em)`. A transform moves only where the element
 paints, not the box sticky pins, so the cards come to rest 4em apart and their
 headers pile up. The negative `margin-bottom` cancels that shift in flow and the
 list's bottom padding gives it back, so the section keeps its full scroll length.
-Each card is opaque, which is what hides the one stacked above it.
+Each card is opaque, which is what hides the one stacked above it. The card pads
+`var(--grid-gutter) 0` and the title is 32px/1.0, so the collapsed band is exactly
+16 + 32 + 16 = 4em and the stacked titles keep their breathing room.
 
 **Entry scramble.** Mono labels shuffle into place the first time they reach the
 viewport — the page's signature load animation. Measured off the reference frame by
@@ -76,6 +115,21 @@ present without JavaScript and stable for screen readers while the glyphs churn;
 `prefers-reduced-motion` skips the effect entirely. The same routine drives the
 hover effect on every button.
 
+**Closing statement.** "We Drive Your Systems Fwrd" is the reference's
+`c-footer-section-title`: a 12-column subgrid of four masked lines at
+`max(0px, 13.8889vw)` (200px at 1440), `line-height: 80%`,
+`letter-spacing: -0.02em`. Line 1 spreads `We`/`Drive` across the full width,
+line 2 is capped at nine columns, line 4 is right-aligned. Each line starts at
+`translateY(100%)` inside a clip that is open at the sides, then rises on a 0.1s
+stagger; the arrow line additionally slides from `-1em` to `0` a further 0.3s
+later, and the last line's inner span tracks scroll from `-100%` to `0`.
+
+**Button labels.** A button keeps a hidden twin of its label in the same grid
+cell (`opacity: 0; color: transparent`). Without it, the hover scramble empties
+the text for a frame and the button collapses and snaps back — the reference
+carries the same duplicate for exactly this reason. Verified: the header CTA
+holds 190x32 through the whole scramble.
+
 **Type scale.** Every size token is `max(floorPx, vw)`, not `clamp(min, vw, max)`.
 The distinction matters: the reference's scale has no upper bound, so on a 1920px
 display its body text is 21.3px and its buttons 16px/43px tall rather than the
@@ -87,6 +141,10 @@ are both `--clamp-16`, so the grid scales with the type.
 identity card and running to the bottom margin, with 56px rows, a 24px display
 label per item, and a red call-to-action filling the last 120px. The rest of the
 page is blurred behind it (`backdrop-filter: blur(15px)`) rather than covered.
+The item list carries `data-lenis-prevent` and `overscroll-behavior: contain`:
+smooth scroll otherwise swallows wheel and touch events over the panel, so a
+list taller than the viewport — an expanded submenu on a short screen — cannot
+be scrolled and the items below it stay unreachable.
 Note: write `backdrop-filter` alone — adding a hand-written `-webkit-` line made
 the build drop the standard property and keep only the prefixed one.
 
@@ -130,7 +188,8 @@ footer items (0.3s / 0.4s), while the index and page title stay static.
 sub-service grid scrolls in. [PageTheme](app/components/PageTheme.tsx) declares a
 page's base theme and any `ThemeZone` below it takes over once its top crosses a
 probe line 10% into the viewport (measured: the section top sits ~89px down a
-900px view), then holds to the end of the page.
+900px view), then holds to the end of the page. The tab nav and its panel sit
+flush — the nav's own `padding-bottom` is the only separation the reference uses.
 
 The colour change is not a CSS transition — it is painted. A second canvas
 (`theme-transition-canvas`, `position: fixed`, `z-index: -1`, so it sits behind the
@@ -166,7 +225,10 @@ three cards share the grid cell `1 / 1 / 2 / 2`, so the panel is exactly one car
 tall and never resizes when you switch; inactive cards are `visibility: hidden`.
 Switching away resets that card's rows to `translateX(-4em)`, so returning replays
 the 0.1s-per-row stagger — and each row's dashed rule wipes in left-to-right via
-`clip-path`. The active tab is `grey-100` filled (not black); black is its hover
+`clip-path`. `visibility` is transitioned with a 0.5s delay so the outgoing card
+actually crossfades rather than popping out on the first frame. The panel also
+carries the reference's oversized index number (`max(0px, 13.8889vw)` — 200px at
+1440, `line-height: 0.77`) sitting bottom-left in columns 1-3. The active tab is `grey-100` filled (not black); black is its hover
 state, same as the reference.
 
 **Clients carousel.** The reference runs Swiper with `effect: 'creative'`, so the
@@ -180,6 +242,47 @@ the slider on touch devices.
 **Hero over ChromeMark.** The chrome section is pulled up with `margin-top: -100svh`
 so its sticky child pins from scroll 0, and the hero (`z-index: 2`) scrolls up off it
 rather than pushing it down the page.
+
+**Selected work helix.** [WorkTornado.tsx](app/components/WorkTornado.tsx) is the one
+section with no counterpart on the reference — the homepage had no work section, so
+this fills that gap. Six project cards orbit a vertical axis, each `40deg` further
+round and `0.35` of a card height above the one below, which traces a helix. The
+section is `300svh` tall with a `100svh` sticky stage inside it, and scroll position
+inside that range scrubs the rotation; the last sixth of the scroll holds on the final
+card so it is readable before the section lets go. Dragging adds an offset on top of
+the scrubbed position and decays out, so you can spin the stack by hand without losing
+your place in the scroll.
+
+Geometry is driven entirely by the stage's `font-size` (`max(9px, 0.88vw)`) — card
+width, orbit radius (`45em`) and vertical gap are all in `em`, so one declaration
+scales the whole helix. Cards wrap into `[-n/2, n/2]` so the loop is endless, and the
+deck is repeated 2-4 times (measured from stage height, repeats are `aria-hidden`) so
+there is always a card entering. Depth is read off `cos`: cards turned away are
+darkened and blurred, and only the card within half a step of front takes pointer
+events, so the Explore link is never stolen by a card behind it. A press that travels
+under 6px still counts as a click.
+
+Once the rotation is done the last card holds still for half a viewport (`HOLD`) — the
+helix eases toward its target rather than snapping to it, so on the frame the rotation
+ends the last card is still settling, and this is the beat where it comes square to the
+viewer. After that, one more viewport of the section is left over. Rather than let an
+empty black stage scroll past before the next section arrives, the block that
+follows is pulled up by exactly that leftover viewport (`.climb` in
+[page.module.css](app/page.module.css)) and lifted above the sticky stage in paint
+order, so Pillars climbs over the held helix — the same trick the hero uses over
+ChromeMark, and it costs the page no extra length. Pillars carries a header-clearance
+top padding because it now lands flush with the top of the viewport. The climb is
+scoped to the exact conditions under which the helix renders (≥1024px, motion not
+reduced); below those the fallback list is in normal flow with no negative margin.
+
+The section sits in a `<ThemeZone theme="dark">`, so entry and exit are handled by the
+existing canvas theme morph rather than anything bespoke. The negative margin moves the
+following zone's top with it, so the morph back to light still fires exactly as Pillars
+reaches the top of the screen. A two-axis scrim on the
+sticky wrapper sinks cards into the black behind the heading — the stage is a
+perspective context, so its cards' `z-index` values stay inside it and one layer covers
+them all. Below 1024px, and under `prefers-reduced-motion`, the same six projects
+render as a plain grid instead.
 
 > **`data-reveal` gotcha:** a reveal target inside an `overflow: hidden` mask is clipped
 > out of the viewport, so IntersectionObserver never fires on it. Put
@@ -209,7 +312,7 @@ All copy, navigation, services, offices and contact details are in one file:
 
 | Route | Design |
 | --- | --- |
-| `/` | Red blinds hero → pinned chrome mark → services → clients → tabs → testimonial → CTA |
+| `/` | Red blinds hero → hero reveal (pinned chrome mark with the opening statement scrolling over it) → services → clients → tabs → testimonial → CTA |
 | `/services/[slug]` | Black hero with the oversized abbreviation over an image, black body with a sticky index column and capability list, then a sub-service grid that turns the page white as it scrolls in (5 pages) |
 | `/services/[slug]/[sub]` | Detail page behind every card's Explore link — 44 statically generated pages |
 | `/projects` | Black. Title + statement, filter pills, numbered accordion |

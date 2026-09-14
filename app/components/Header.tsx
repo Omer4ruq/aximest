@@ -49,12 +49,14 @@ export default function Header() {
             <span className={styles.brandMark}>
               <Mark />
             </span>
-            <span className={styles.brandText}>{site.mark}</span>
           </Link>
-          <span className={styles.brandTag}>
-            Development
-            <br />
-            Labs
+          <span className={styles.brandCopy}>
+            <span className={styles.brandText}>{site.mark}</span>
+            <span className={styles.brandTag}>
+              Development
+              <br />
+              Labs
+            </span>
           </span>
         </div>
 
@@ -104,7 +106,10 @@ export default function Header() {
 
       {/* Navigation panel: four grid columns, anchored under the card */}
       <div className={styles.panel} data-open={open} aria-hidden={!open}>
-        <ol className={styles.menuList}>
+        {/* data-lenis-prevent hands wheel and touch events back to this
+            container, otherwise smooth scroll swallows them and the list
+            cannot be scrolled. */}
+        <ol className={styles.menuList} data-lenis-prevent>
           {nav.map((item, i) => (
             <li
               key={item.label}
